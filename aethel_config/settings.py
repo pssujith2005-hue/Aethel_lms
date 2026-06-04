@@ -47,7 +47,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# The missing line causing your error
 ROOT_URLCONF = 'aethel_config.urls'
 
 # 5. Template Layout Engine
@@ -72,8 +71,6 @@ WSGI_APPLICATION = 'aethel_config.wsgi.application'
 
 
 # 6. Database Router Setup
-# Defaults to SQLite to let your UI run immediately. 
-# We can swap this to the Postgres .env URL cleanly later.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -114,3 +111,8 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# 10. AI Engine API Configuration
+# FIXED: Bind the Gemini API Key value so quizzes/ai_engine.py can securely read it
+AI_API_KEY = env('AI_API_KEY', default='')

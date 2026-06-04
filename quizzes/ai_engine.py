@@ -5,7 +5,7 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 from typing import List
-from django.conf import settings # FIXED: Imported settings to safely read your API key
+from django.conf import settings
 from .models import StudyMaterial, Question
 
 # Pydantic Blueprint forces Gemini to return strict structural data profiles
@@ -40,10 +40,13 @@ def generate_ai_quiz(material_id):
     """Fetches text context background details and populates question structures via Gemini."""
     material = StudyMaterial.objects.get(id=material_id)
     
-    if not material.extracted_text:
-        return False
+    if not material.extracted_text or len(material.extracted_text.strip()) == 0:
+        return False, "The uploaded PDF file is empty or could not be parsed into readable text."
 
-    # FIXED: Explicitly pass your safe configuration key from settings straight to the GenAI client init
+    if not settings.AI_API_KEY:
+        return False, "Gemini API Key is missing. Please configure AI_API_KEY in your .env file."
+
+    # Initialize the client securely
     client = genai.Client(api_key=settings.AI_API_KEY)
     
     prompt = f"""
@@ -85,9 +88,10 @@ def generate_ai_quiz(material_id):
                 option_d=item['option_d'],
                 correct_answer=item['correct_answer'].upper().strip(),
                 concept_tag=item['concept_tag'].replace(" ", "_"),
-                difficulty='MEDIUM' # Start baseline at medium difficulty
+                difficulty='MEDIUM'
             )
-        return True
+        return True, None
     except Exception as e:
-        print(f"Failed to generate or store AI content safely: {e}")
-        return False
+        error_msg = str(e)
+        print(f"Failed to generate or store AI content safely: {error_msg}")
+        return False, f"AI Generation Failed: {error_msg}"
