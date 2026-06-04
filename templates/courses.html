@@ -1,27 +1,222 @@
 {% extends 'base.html' %}
 
-{% block title %}My Courses | Aethel.ai{% endblock %}
+{% block title %}My Courses & Study Deck | Aethel.ai{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-slate-900">My Study Vault 📚</h1>
-        <p class="text-slate-500 mt-1">Manage and access your active subjects and documents.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-            <div class="flex items-center justify-between mb-4">
-                <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700">Active</span>
-                <span class="text-xs text-slate-400">4 Materials</span>
-            </div>
-            <h3 class="text-lg font-bold text-slate-900 mb-1">Database Management Systems</h3>
-            <p class="text-sm text-slate-500 mb-6">Covers SQL architectures, indices, indexing, and transactional ACID parameters.</p>
-            <div class="w-full bg-slate-100 h-1.5 rounded-full mb-4 overflow-hidden">
-                <div class="bg-emerald-500 h-full" style="width: 65%"></div>
-            </div>
-            <button class="w-full text-center bg-slate-50 hover:bg-slate-100 text-slate-700 py-2 rounded-xl text-sm font-medium transition">Open Course</button>
+<div class="space-y-8 max-w-6xl">
+    
+    <!-- Header Block -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Interactive Courses & Resource Hub 📚</h1>
+            <p class="text-slate-500 mt-1">Select your entrance target exam, visit official sources, and track your study milestones.</p>
+        </div>
+        
+        <!-- Live Exam Selector Dropdown -->
+        <div class="bg-white px-4 py-2 border border-slate-200 rounded-2xl shadow-sm flex items-center space-x-3">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Goal:</span>
+            <form method="GET" action="{% url 'courses' %}" id="examSelectorForm">
+                <select name="exam" onchange="document.getElementById('examSelectorForm').submit()" class="text-sm font-bold text-blue-600 bg-transparent focus:outline-none cursor-pointer">
+                    <option value="lbs_mca" {% if selected_exam_key == 'lbs_mca' %}selected{% endif %}>LBS MCA Entrance (Kerala)</option>
+                    <option value="cusat_cat" {% if selected_exam_key == 'cusat_cat' %}selected{% endif %}>CUSAT CAT MCA</option>
+                    <option value="nimcet" {% if selected_exam_key == 'nimcet' %}selected{% endif %}>NIMCET National NIT</option>
+                </select>
+            </form>
         </div>
     </div>
+
+    <!-- Main Content Layout Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Side (2 Columns): Target Exam Details & Syllabus Tracker -->
+        <div class="lg:col-span-2 space-y-8">
+            
+            <!-- Target Exam Overview Card -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-32 h-32 bg-blue-500/5 rounded-full blur-xl"></div>
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <span class="px-3.5 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wider">TARGET PREP</span>
+                    <a href="{{ exam_data.official_url }}" target="_blank" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center space-x-1 transition">
+                        <span>Visit Official Portal</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-slate-900 mt-4">{{ exam_data.name }}</h2>
+                <p class="text-slate-600 text-sm mt-2 leading-relaxed">{{ exam_data.brief_info }}</p>
+                
+                <div class="mt-6 p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-start space-x-4">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-md flex-shrink-0">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Exam Scheme & Duration</h4>
+                        <p class="text-slate-700 text-sm font-semibold mt-0.5 leading-relaxed">{{ exam_data.pattern }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Syllabus Progress Checklist Tracker Card (localStorage integrated) -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Syllabus Milestones Tracker</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Click topics below to check them off as completed. Your progress is saved automatically!</p>
+                    </div>
+                    <!-- Master Circular Progress Indicator -->
+                    <div class="flex items-center space-x-2.5">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">COMPLETED:</span>
+                        <span id="trackerPercent" class="text-lg font-extrabold text-blue-600">0%</span>
+                    </div>
+                </div>
+
+                <!-- Syllabus Subject Collapsible Layout -->
+                <div class="space-y-6">
+                    {% for subject, topics in exam_data.syllabus.items %}
+                    <div class="border border-slate-100 rounded-2xl p-5 bg-slate-50/40">
+                        <h4 class="text-sm font-extrabold text-slate-800 flex items-center gap-2 mb-3.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span> {{ subject }}
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            {% for topic in topics %}
+                            <label class="flex items-center space-x-3 p-3 bg-white border border-slate-100 rounded-xl cursor-pointer hover:border-blue-300 transition select-none">
+                                <input type="checkbox" 
+                                       value="{{ selected_exam_key }}_{{ subject }}_{{ topic }}"
+                                       class="syllabus-checkbox w-4.5 h-4.5 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+                                       onchange="updateProgressState()">
+                                <span class="text-xs font-medium text-slate-700 topic-label">{{ topic }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Side (1 Column): Study Downloads & Your Uploaded Study Materials -->
+        <div class="space-y-8">
+            
+            <!-- Official Study Materials Downloads Card -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">Official Preparation Material</h3>
+                <div class="space-y-3.5">
+                    {% for file in exam_data.materials %}
+                    <a href="{{ file.file_url }}" onclick="triggerSimulatedDownload('{{ file.title }}'); return false;" class="flex items-center justify-between p-3.5 bg-slate-50/60 border border-slate-100 rounded-xl hover:bg-blue-50/40 hover:border-blue-200 transition group">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-sm group-hover:scale-105 transition">
+                                <i class="fa-solid {{ file.icon }}"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 line-clamp-1">{{ file.title }}</h4>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ file.category }}</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle-down text-slate-300 group-hover:text-blue-500 transition text-lg"></i>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Uploaded Custom AI Materials (Synced from AI Lab DB) -->
+            <div class="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <h3 class="text-base font-bold text-slate-900">My Custom AI Decks</h3>
+                    <a href="{% url 'ai_lab' %}" class="text-[10px] font-bold text-blue-600 hover:underline uppercase tracking-wider flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </a>
+                </div>
+                
+                {% if materials %}
+                <div class="space-y-3">
+                    {% for mat in materials %}
+                    <div class="p-3.5 bg-slate-50/60 border border-slate-100 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <div class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xs flex-shrink-0">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold text-slate-800 truncate">{{ mat.title }}</h4>
+                                <p class="text-[10px] text-slate-400 font-medium">Extracted size: {{ mat.extracted_text|length }} chars</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'take_quiz' mat.id %}" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold rounded-lg shadow-sm transition active:scale-95">
+                            Quiz
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-6">
+                    <div class="w-10 h-10 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-2.5">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+                    <p class="text-xs text-slate-400 font-semibold">No custom textbooks uploaded.</p>
+                    <a href="{% url 'ai_lab' %}" class="text-xs text-blue-600 font-bold hover:underline inline-block mt-1">Upload PDF in AI Lab</a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
+
+<!-- Preparation Scripts for Interactive Checklist (Saved Local State) -->
+<script>
+    // Storage Key ID unique to selected target exam state
+    const currentExamKey = "{{ selected_exam_key }}";
+
+    // Standard download simulator to ensure user experience triggers correctly
+    function triggerSimulatedDownload(materialName) {
+        // Prepare simple dynamic text content to compile as a text study outline guide
+        const fileContent = `Aethel.ai Prep Engine\n==================================\nResource: ${materialName}\nTarget Goal: ${currentExamKey.toUpperCase()}\n\nThis outline is ready. Use the AI Quiz engine to generate structured MCQ sets.`;
+        const blob = new Blob([fileContent], { type: 'text/plain' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${materialName.replace(/\\s+/g, '_')}_StudyGuide.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Function to calculate completed percentage and apply UI checked styles
+    function updateProgressState() {
+        const checkboxes = document.querySelectorAll('.syllabus-checkbox');
+        let checkedCount = 0;
+        
+        checkboxes.forEach(box => {
+            const label = box.parentElement;
+            if (box.checked) {
+                checkedCount++;
+                label.classList.add('border-blue-400', 'bg-blue-50/20');
+                localStorage.setItem(box.value, 'true');
+            } else {
+                label.classList.remove('border-blue-400', 'bg-blue-50/20');
+                localStorage.removeItem(box.value);
+            }
+        });
+
+        // Compute Completion percentage ratio
+        const total = checkboxes.length;
+        const percentage = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+        
+        // Update Percentage elements
+        document.getElementById('trackerPercent').innerText = `${percentage}%`;
+    }
+
+    // Load checked items on document init
+    window.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('.syllabus-checkbox');
+        checkboxes.forEach(box => {
+            const savedState = localStorage.getItem(box.value);
+            if (savedState === 'true') {
+                box.checked = true;
+            }
+        });
+        updateProgressState();
+    });
+</script>
 {% endblock %}

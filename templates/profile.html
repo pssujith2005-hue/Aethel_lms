@@ -13,8 +13,12 @@
             <!-- Sleek Graduated Avatar Frame -->
             <div class="relative group">
                 <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 p-1 shadow-lg transform transition group-hover:scale-105 duration-200">
-                    <div class="w-full h-full bg-white rounded-xl flex items-center justify-center text-4xl font-extrabold text-indigo-600">
-                        S
+                    <div class="w-full h-full bg-white rounded-xl flex items-center justify-center text-4xl font-extrabold text-indigo-600 uppercase">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.first_name|slice:":1"|default:request.user.username|slice:":1" }}
+                        {% else %}
+                            {{ request.session.profile_full_name|slice:":1"|default:"S" }}
+                        {% endif %}
                     </div>
                 </div>
                 <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white" title="Active Premium Member">
@@ -24,12 +28,24 @@
             
             <div class="text-center sm:text-left space-y-1">
                 <div class="flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                    <h1 class="text-2xl font-bold text-slate-900">Student User</h1>
+                    <h1 class="text-2xl font-bold text-slate-900">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.first_name|default:request.user.username }}
+                        {% else %}
+                            {{ request.session.profile_full_name|default:"Student User" }}
+                        {% endif %}
+                    </h1>
                     <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wider">Premium Member</span>
                 </div>
-                <p class="text-slate-500 text-sm">LBS MCA Entrance 2026 Focus Group</p>
+                <!-- Dynamic Education Subtitle -->
+                <p id="profileEduSubtitle" class="text-slate-500 text-sm font-semibold">Loading Student Track...</p>
                 <p class="text-slate-400 text-xs flex items-center justify-center sm:justify-start gap-1">
-                    <i class="fa-regular fa-envelope"></i> student@lbsmca.in
+                    <i class="fa-regular fa-envelope"></i> 
+                    {% if request.user.is_authenticated %}
+                        {{ request.user.email }}
+                    {% else %}
+                        {{ request.session.profile_email|default:"student@lbsmca.in" }}
+                    {% endif %}
                 </p>
             </div>
         </div>
@@ -37,7 +53,7 @@
         <div class="flex flex-col items-center md:items-end justify-center z-10 text-center md:text-right space-y-1">
             <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Aethel Prep Rank</span>
             <span class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Top 12%</span>
-            <span class="text-xs text-indigo-500 font-medium">LBS Syllabus Level: Intermediate</span>
+            <span id="levelSyllabusBadge" class="text-xs text-indigo-500 font-medium">Syllabus Level: General</span>
         </div>
     </div>
 
@@ -77,41 +93,54 @@
             </div>
         </div>
 
-        <!-- Right Side: Profile Configuration Update Editor Form -->
+        <!-- Right Side: Profile Update Editor Form -->
         <div class="md:col-span-2 space-y-6">
             <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm">
                 <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6">Account & Prep Settings</h3>
                 
-                <form class="space-y-6" method="POST" action="{% url 'profile' %}">
+                <form class="space-y-6" method="POST" action="{% url 'profile' %}" id="profileSettingsForm">
                     {% csrf_token %}
                     
                     <!-- Standard Personal Details -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Full Name</label>
-                            <input type="text" name="full_name" required value="Student User" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                            <input type="text" name="full_name" required 
+                                   value="{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username }}{% else %}{{ request.session.profile_full_name|default:'Student User' }}{% endif %}" 
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Email Address</label>
-                            <input type="email" readonly value="student@lbsmca.in" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed focus:outline-none">
+                            <input type="email" name="email" required 
+                                   value="{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}{{ request.session.profile_email|default:'student@lbsmca.in' }}{% endif %}" 
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
                         </div>
                     </div>
 
-                    <!-- Target Focus Path Configuration -->
+                    <!-- Target Focus Path Configuration (Adapted for 5th to PG/UG Levels) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Active Target Exam</label>
-                            <select name="prep_track" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
-                                <option value="lbs_mca" selected>LBS MCA Entrance Exam 2026</option>
-                                <option value="cusat_cat">CUSAT CAT MCA</option>
-                                <option value="nimcet">NIMCET National Exam</option>
-                                <option value="other">Other Entrance Exams</option>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Education Level</label>
+                            <select name="education_level" id="educationLevel" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                                <option value="middle_school">Middle School (Class 5 - 8)</option>
+                                <option value="high_school">High School (Class 9 - 10)</option>
+                                <option value="higher_secondary">Higher Secondary (Class 11 - 12)</option>
+                                <option value="ug" selected>Undergraduate (UG / Bachelors)</option>
+                                <option value="pg">Postgraduate (PG / Masters)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Target Coaching Center</label>
-                            <input type="text" readonly value="Peaktime Learners / Happile" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 cursor-not-allowed focus:outline-none">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Active Target Exam / Focus</label>
+                            <select name="prep_track" id="prepTrack" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                                <!-- Dynamically populated by JavaScript based on chosen Education Level -->
+                            </select>
                         </div>
+                    </div>
+
+                    <!-- Target Coaching / Institution Information -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Institution / Coaching Focus</label>
+                        <input type="text" name="institution_focus" id="institutionFocus" value="Self Study / School Board Track" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex justify-end">
@@ -126,4 +155,146 @@
     </div>
 
 </div>
+
+<!-- Interactive Dynamic Selection & State Handler Scripts -->
+<script>
+    // Unified exam choices dataset mapped by educational tiers
+    const educationalPaths = {
+        middle_school: {
+            subTitle: "Middle School Scholar (Class 5 - 8 Track)",
+            badgeLevel: "Level: Fundamental Basics",
+            defaultInstitution: "Government / Private Board School Track",
+            exams: [
+                { value: "class_5_8_exams", label: "Term School Examinations (Class 5-8)" },
+                { value: "uss_scholarship", label: "USS Scholarship Exam (Class 7)" },
+                { value: "sub_district_science", label: "Sub-District Science & Math Fair Prep" },
+                { value: "elementary_olympiads", label: "National Cyber/Science Olympiad (NCO/NSO)" }
+            ]
+        },
+        high_school: {
+            subTitle: "High School Scholar (Class 9 - 10 SSLC / CBSE / ICSE)",
+            badgeLevel: "Level: Core Foundations",
+            defaultInstitution: "Secondary School Board Track",
+            exams: [
+                { value: "class_9_10_exams", label: "Board Matriculation (SSLC/CBSE/ICSE)" },
+                { value: "lss_scholarship", label: "LSS / USS State Talent Search" },
+                { value: "ntse_scholarship", label: "NTSE (National Talent Search Exam)" },
+                { value: "high_school_olympiads", label: "SOF Olympiads & High-School Mathematics" }
+            ]
+        },
+        higher_secondary: {
+            subTitle: "Higher Secondary Student (Class 11 - 12 / Science / Commerce / Humanities)",
+            badgeLevel: "Level: Advanced Foundations",
+            defaultInstitution: "HSE Board / JEE-NEET Entrance Center",
+            exams: [
+                { value: "hse_boards", label: "Plus Two HSE Board Exams (Kerala/CBSE)" },
+                { value: "jee_mains", label: "JEE Main / Advanced (Engineering Track)" },
+                { value: "neet_ug", label: "NEET UG (Medical Entrance Track)" },
+                { value: "keam_entrance", label: "KEAM Kerala Engineering & Pharmacy" },
+                { value: "cuet_ug", label: "CUET UG (Central University Undergrad Admission)" }
+            ]
+        },
+        ug: {
+            subTitle: "Undergraduate Student (UG Track)",
+            badgeLevel: "Level: Intermediate Professional",
+            defaultInstitution: "Peaktime Learners / Happile / University Coach",
+            exams: [
+                { value: "lbs_mca", label: "LBS MCA Entrance Exam (Kerala)" },
+                { value: "cusat_cat", label: "CUSAT CAT MCA Entrance" },
+                { value: "nimcet", label: "NIMCET (National NIT MCA Common Entrance)" },
+                { value: "cat_mba", label: "CAT / CMAT (MBA Admissions Track)" },
+                { value: "university_ug_exams", label: "University Semester End Examinations" }
+            ]
+        },
+        pg: {
+            subTitle: "Postgraduate Scholar (PG Track)",
+            badgeLevel: "Level: Advanced Professional Mastery",
+            defaultInstitution: "Academic Research & Professional Placement Track",
+            exams: [
+                { value: "gate_exam", label: "GATE (Graduate Aptitude Test in Engineering)" },
+                { value: "ugc_net", label: "UGC NET / CSIR NET (Lectureship & Research)" },
+                { value: "university_pg_exams", label: "Postgrad University Semester Exams" },
+                { value: "placement_prep", label: "Corporate Placements & IT Technical Hiring" }
+            ]
+        }
+    };
+
+    const eduSelector = document.getElementById("educationLevel");
+    const prepSelector = document.getElementById("prepTrack");
+    const subtitleEl = document.getElementById("profileEduSubtitle");
+    const badgeEl = document.getElementById("levelSyllabusBadge");
+    const institutionInput = document.getElementById("institutionFocus");
+
+    // Dynamic Options Updater Function
+    function syncEducationalTiers(savedExamValue = null) {
+        const selectedTier = eduSelector.value;
+        const configuration = educationalPaths[selectedTier];
+
+        // 1. Update Profile Card Headings dynamically
+        subtitleEl.innerText = configuration.subTitle;
+        badgeEl.innerText = `Syllabus ${configuration.badgeLevel}`;
+
+        // 2. Clear out older track options in preparation for the fresh batch
+        prepSelector.innerHTML = "";
+
+        // 3. Render and attach the fresh selection track nodes
+        configuration.exams.forEach(exam => {
+            const opt = document.createElement("option");
+            opt.value = exam.value;
+            opt.innerText = exam.label;
+            
+            // Check if this option should be selected
+            if (savedExamValue && exam.value === savedExamValue) {
+                opt.selected = true;
+            } else if (!savedExamValue && exam.value === "{{ current_prep_track }}") {
+                opt.selected = true;
+            }
+            prepSelector.appendChild(opt);
+        });
+
+        // 4. Update the institution placeholder helper only if the user hasn't typed a custom choice
+        if (!localStorage.getItem("user_custom_institution_typed")) {
+            institutionInput.value = configuration.defaultInstitution;
+        }
+    }
+
+    // Capture explicit user interaction changes to update local storage
+    eduSelector.addEventListener("change", () => {
+        localStorage.setItem("aethel_saved_edu_level", eduSelector.value);
+        syncEducationalTiers();
+    });
+
+    prepSelector.addEventListener("change", () => {
+        localStorage.setItem("aethel_saved_prep_track", prepSelector.value);
+    });
+
+    institutionInput.addEventListener("input", () => {
+        localStorage.setItem("user_custom_institution_typed", "true");
+        localStorage.setItem("aethel_saved_institution", institutionInput.value);
+    });
+
+    // Run synchronization check upon document load
+    window.addEventListener("DOMContentLoaded", () => {
+        // Retrieve and restore persistent settings states from client browser memory (localStorage)
+        const savedEdu = localStorage.getItem("aethel_saved_edu_level");
+        const savedExam = localStorage.getItem("aethel_saved_prep_track");
+        const savedInst = localStorage.getItem("aethel_saved_institution");
+
+        if (savedEdu && educationalPaths[savedEdu]) {
+            eduSelector.value = savedEdu;
+        }
+        if (savedInst) {
+            institutionInput.value = savedInst;
+        }
+
+        syncEducationalTiers(savedExam);
+    });
+
+    // Ensure state synchronizes correctly upon form submissions
+    document.getElementById("profileSettingsForm").addEventListener("submit", () => {
+        localStorage.setItem("aethel_saved_edu_level", eduSelector.value);
+        localStorage.setItem("aethel_saved_prep_track", prepSelector.value);
+        localStorage.setItem("aethel_saved_institution", institutionInput.value);
+    });
+</script>
 {% endblock %}

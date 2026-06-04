@@ -6,6 +6,10 @@
     <title>{% block title %}Aethel.ai{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- KaTeX library for rapid, elegant mathematical equation rendering on the fly -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 </head>
 <body class="bg-[#F8FAFC] font-sans antialiased text-slate-800">
 
@@ -15,8 +19,8 @@
         </div>
         
         <nav class="flex-grow px-4 space-y-1.5">
-            <a href="{% url 'dashboard' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'dashboard' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-house text-base {% if active_nav == 'dashboard' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Dashboard</span>
+            <a href="{% url 'dashboard' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'dashboard' or not active_nav %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-house text-base {% if active_nav == 'dashboard' or not active_nav %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Dashboard</span>
             </a>
             <a href="{% url 'courses' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'courses' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
                 <i class="fa-solid fa-book-open text-base {% if active_nav == 'courses' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>My Courses</span>
@@ -24,12 +28,21 @@
             <a href="{% url 'ai_lab' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'ai_lab' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
                 <i class="fa-solid fa-bolt text-base {% if active_nav == 'ai_lab' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>AI Lab</span>
             </a>
+            
+            <!-- NEW NAVIGATION ITEM: Multimodal Doubt Solver & Audio Tutor -->
+            <a href="{% url 'doubt_solver' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'doubt_solver' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-wand-magic-sparkles text-base {% if active_nav == 'doubt_solver' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>AI Doubt Solver 💡</span>
+            </a>
+
             <a href="{% url 'analytics' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'analytics' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
                 <i class="fa-solid fa-chart-line text-base {% if active_nav == 'analytics' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Analytics</span>
             </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-100">
+        <div class="p-4 border-t border-slate-100 space-y-1">
+            <a href="{% url 'profile' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'profile' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-user-gear text-base {% if active_nav == 'profile' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Profile Settings</span>
+            </a>
             <a href="{% url 'landing' %}" class="flex items-center space-x-3 text-red-500 hover:bg-red-50 p-3 rounded-xl transition-all font-medium text-sm">
                 <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
             </a>
@@ -39,18 +52,55 @@
     <main class="lg:ml-64 min-h-screen">
         <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 h-16 flex items-center justify-between px-8">
             <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Aethel AI Ecosystem</h2>
-            <div class="flex items-center space-x-4">
+            <a href="{% url 'profile' %}" class="flex items-center space-x-4 hover:opacity-85 transition duration-150">
                 <div class="text-right hidden sm:block">
-                    <p class="text-sm font-bold text-slate-900">Student User</p>
-                    <p class="text-xs text-blue-600 font-medium">Premium Tier</p>
+                    <p class="text-sm font-bold text-slate-900">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.first_name|default:request.user.username }}
+                        {% else %}
+                            {{ request.session.profile_full_name|default:"Student User" }}
+                        {% endif %}
+                    </p>
+                    <p class="text-xs text-blue-600 font-medium">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.email }}
+                        {% else %}
+                            {{ request.session.profile_email|default:"student@lbsmca.in" }}
+                        {% endif %}
+                    </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-100">
-                    S
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-100 uppercase">
+                    {% if request.user.is_authenticated %}
+                        {{ request.user.first_name|slice:":1"|default:request.user.username|slice:":1" }}
+                    {% else %}
+                        {{ request.session.profile_full_name|slice:":1"|default:"S" }}
+                    {% endif %}
                 </div>
-            </div>
+            </a>
         </header>
 
         <div class="p-8">
+            {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-xl text-sm font-semibold flex items-center justify-between shadow-sm animate-fade-in transition-all duration-300
+                            {% if message.tags == 'success' %} bg-emerald-50 text-emerald-800 border border-emerald-100 {% else %} bg-rose-50 text-rose-800 border border-rose-100 {% endif %}">
+                            <div class="flex items-center space-x-3">
+                                {% if message.tags == 'success' %}
+                                    <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
+                                {% endif %}
+                                <span>{{ message }}</span>
+                            </div>
+                            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             {% block content %}{% endblock %}
         </div>
     </main>
