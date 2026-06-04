@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethel.ai - Adaptive AI-Enhanced LMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+
+    <nav class="bg-white border-b border-slate-200 fixed w-full z-50 top-0 start-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Aethel.ai</span>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">Features</a>
+                <a href="#" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">How it works</a>
+                <a href="{% url 'auth_portal' %}" class="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition">Login</a>
+<a href="{% url 'auth_portal' %}" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-32 pb-20 bg-gradient-to-b from-blue-50 to-transparent">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">Next-Gen Adaptive Learning</span>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+                Turn Lecture Notes Into <br><span class="text-blue-600">Personalized Study Plans</span>
+            </h1>
+            <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-10">
+                Aethel.ai extracts intelligence from your textbooks and videos to generate dynamic quizzes that instantly adapt to your individual learning pace.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <a href="#" class="px-6 py-3 font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition">Get Started for Free</a>
+                <a href="#" class="px-6 py-3 font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition">Watch Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Platform Features</h2>
+                <p class="mt-4 text-lg text-slate-600">Engineered to optimize comprehension, eliminate guesswork, and track actual mastery.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="p-8 border border-slate-200 rounded-2xl hover:shadow-xl transition duration-300">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6 font-bold text-xl">📄</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Multi-Format AI Ingestion</h3>
+                    <p class="text-slate-600 leading-relaxed">Upload textbooks, lecture PDFs, or drop a YouTube video link. Our AI parses and breaks down the core concepts automatically.</p>
+                </div>
+
+                <div class="p-8 border border-slate-200 rounded-2xl hover:shadow-xl transition duration-300">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mb-6 font-bold text-xl">⚡</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Dynamic Adaptive Testing</h3>
+                    <p class="text-slate-600 leading-relaxed">The system analyzes every question you miss, updating your profile parameters to auto-generate quizzes focused purely on weak sub-topics.</p>
+                </div>
+
+                <div class="p-8 border border-slate-200 rounded-2xl hover:shadow-xl transition duration-300">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 font-bold text-xl">📊</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Granular Concept Analytics</h3>
+                    <p class="text-slate-600 leading-relaxed">Ditch standard abstract scores. View your learning curve via detailed knowledge graphs pinpointing your exact level of performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-200 bg-slate-50 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-slate-500">
+            &copy; 2026 Aethel.ai. All rights reserved. Built as an enterprise-grade adaptive learning platform.
+        </div>
+    </footer>
+
+</body>
+</html>

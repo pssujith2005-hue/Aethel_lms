@@ -1,0 +1,14 @@
+# Ignore virtual environments
+venv/
+.venv/
+env/
+
+# Ignore local database configurations
+db.sqlite3
+
+# Ignore hidden environment files containing keys
+.env
+
+# Ignore temporary python caching files
+__pycache__/
+*.pyc

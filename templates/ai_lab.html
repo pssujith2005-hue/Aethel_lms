@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Engine Lab | Aethel.ai{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900">AI Knowledge Lab ⚡</h1>
+        <p class="text-slate-500 mt-1">Ingest raw educational text structures to configure specialized custom questions instantly.</p>
+    </div>
+
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-8 max-w-2xl shadow-sm">
+        <h2 class="text-lg font-bold text-slate-900 mb-4">Upload Context Source</h2>
+        
+        <form class="space-y-6" method="POST" enctype="multipart/form-data" action="{% url 'ai_lab' %}">
+            {% csrf_token %}
+            <div class="border-2 border-dashed border-slate-200 hover:border-blue-500 bg-slate-50/50 rounded-xl p-8 text-center cursor-pointer relative">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-3"></i>
+                <p class="text-sm font-semibold text-slate-700">Select or drop lecture textbook PDF here</p>
+                <input type="file" name="lecture_file" required class="block mx-auto mt-4 text-xs text-slate-500">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition">
+                Generate Interactive Quiz via AI
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

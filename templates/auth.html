@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Aethel.ai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Smooth animation styling for transitioning between login and signup sliders */
+        .slide-container {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 h-screen flex items-center justify-center overflow-hidden font-sans antialiased">
+
+    <div class="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-3xl -top-10 -left-10 animate-pulse"></div>
+    <div class="absolute w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl -bottom-10 -right-10 animate-pulse" style="animation-delay: 2s;"></div>
+
+    <div class="relative bg-slate-800 border border-slate-700/50 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-8 z-10 mx-4">
+        
+        <div class="text-center mb-6">
+            <a href="{% url 'landing' %}" class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Aethel.ai</a>
+            <p class="text-slate-400 text-sm mt-1">Your adaptive AI ecosystem</p>
+        </div>
+
+        <div class="flex border-b border-slate-700 mb-6 relative">
+            <button id="loginTab" onclick="switchTab('login')" class="w-1/2 pb-3 text-center font-semibold text-blue-400 border-b-2 border-blue-500 transition duration-300">Login</button>
+            <button id="signupTab" onclick="switchTab('signup')" class="w-1/2 pb-3 text-center font-semibold text-slate-400 border-b-0 border-transparent transition duration-300">Sign Up</button>
+        </div>
+
+        <div class="overflow-hidden relative w-full">
+            <div id="slideContainer" class="slide-container flex w-[200%]">
+                
+                <div class="w-1/2 pr-4 transition-opacity duration-300" id="loginFormSection">
+                    <form class="space-y-4" method="POST" action="">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                            <input type="email" name="email" required class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                            <input type="password" name="password" required class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="••••••••">
+                        </div>
+                        <div class="text-right">
+                            <a href="#" class="text-xs text-blue-400 hover:underline">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition transform active:scale-95">Sign In</button>
+                    </form>
+                </div>
+
+                <div class="w-1/2 pl-4 opacity-50 transition-opacity duration-300" id="signupFormSection">
+                    <form class="space-y-4" method="POST" action="">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
+                            <input type="email" name="email" required class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="name@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                            <input type="password" id="signupPassword" name="password" oninput="validatePassword()" required class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="••••••••">
+                            <p id="passwordHint" class="text-[11px] text-slate-400 mt-1 transition-all">
+                                Must contain at least <span id="reqChar" class="text-red-400">8 characters</span>, 
+                                <span id="reqLetter" class="text-red-400">letters</span>, and 
+                                <span id="reqNum" class="text-red-400">numbers</span>.
+                            </p>
+                        </div>
+                        <button type="submit" id="signupSubmit" disabled class="w-full bg-slate-600 text-slate-400 font-semibold py-3 px-4 rounded-xl cursor-not-allowed shadow-md transition transform">Create Account</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="relative flex py-4 items-center">
+            <div class="flex-grow border-t border-slate-700"></div>
+            <span class="flex-shrink mx-4 text-slate-500 text-xs uppercase tracking-wider">or</span>
+            <div class="flex-grow border-t border-slate-700"></div>
+        </div>
+
+        <button type="button" class="w-full flex items-center justify-center bg-white hover:bg-slate-100 text-slate-900 font-medium py-3 px-4 rounded-xl shadow-sm transition transform active:scale-95 space-x-2">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.58 14.97 1 12 1 7.35 1 3.4 3.65 1.5 7.5l3.6 2.8C6.01 7.04 8.79 5.04 12 5.04z"/>
+                <path fill="#4285F4" d="M23.5 12.25c0-.82-.07-1.6-.2-2.35H12v4.5h6.48c-.28 1.48-1.12 2.73-2.38 3.58l3.66 2.84c2.14-1.98 3.74-4.89 3.74-8.57z"/>
+                <path fill="#FBBC05" d="M5.1 14.7c-.25-.76-.39-1.57-.39-2.4s.14-1.64.39-2.4L1.5 7.1C.54 9.03 0 11.19 0 13.5s.54 4.47 1.5 6.4l3.6-2.8z"/>
+                <path fill="#34A853" d="M12 23c3.24 0 5.97-1.08 7.96-2.92l-3.66-2.84c-1.01.67-2.3 1.08-4.3 1.08-3.21 0-6-2-6.9-4.96L1.5 16.2C3.4 20.05 7.35 23 12 23z"/>
+            </svg>
+            <span>Continue with Gmail</span>
+        </button>
+    </div>
+
+    <script>
+        function switchTab(type) {
+            const container = document.getElementById('slideContainer');
+            const loginTab = document.getElementById('loginTab');
+            const signupTab = document.getElementById('signupTab');
+            const loginFormSection = document.getElementById('loginFormSection');
+            const signupFormSection = document.getElementById('signupFormSection');
+
+            if (type === 'login') {
+                container.style.transform = 'translateX(0%)';
+                loginTab.className = "w-1/2 pb-3 text-center font-semibold text-blue-400 border-b-2 border-blue-500 transition duration-300";
+                signupTab.className = "w-1/2 pb-3 text-center font-semibold text-slate-400 border-b-0 border-transparent transition duration-300";
+                loginFormSection.classList.remove('opacity-50');
+                signupFormSection.classList.add('opacity-50');
+            } else {
+                container.style.transform = 'translateX(-50%)';
+                signupTab.className = "w-1/2 pb-3 text-center font-semibold text-blue-400 border-b-2 border-blue-500 transition duration-300";
+                loginTab.className = "w-1/2 pb-3 text-center font-semibold text-slate-400 border-b-0 border-transparent transition duration-300";
+                signupFormSection.classList.remove('opacity-50');
+                loginFormSection.classList.add('opacity-50');
+            }
+        }
+
+        function validatePassword() {
+            const pass = document.getElementById('signupPassword').value;
+            const submitBtn = document.getElementById('signupSubmit');
+            
+            // Checking the validation rules
+            const hasLength = pass.length >= 8;
+            const hasLetter = /[a-zA-Z]/.test(pass);
+            const hasNum = /[0-9]/.test(pass);
+
+            // Dynamically toggling colors based on rule matches
+            document.getElementById('reqChar').className = hasLength ? "text-green-400 font-medium" : "text-red-400";
+            document.getElementById('reqLetter').className = hasLetter ? "text-green-400 font-medium" : "text-red-400";
+            document.getElementById('reqNum').className = hasNum ? "text-green-400 font-medium" : "text-red-400";
+
+            // Enable or disable the button dynamically
+            if (hasLength && hasLetter && hasNum) {
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition transform active:scale-95 cursor-pointer";
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.className = "w-full bg-slate-600 text-slate-400 font-semibold py-3 px-4 rounded-xl cursor-not-allowed shadow-md transition transform";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Interactive Quiz | Aethel.ai{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900">Evaluation: {{ material.title }}</h1>
+        <p class="text-slate-500 mt-1">Review the options carefully before submitting your answers.</p>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        {% for q in questions %}
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-600 uppercase">{{ q.concept_tag }}</span>
+                <span class="text-xs text-slate-400">Difficulty: {{ q.difficulty }}</span>
+            </div>
+            <p class="text-base font-semibold text-slate-800">{{ forloop.counter }}. {{ q.question_text }}</p>
+            
+            <div class="grid grid-cols-1 gap-3">
+                <label class="flex items-center p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer text-sm font-medium transition">
+                    <input type="radio" name="question_{{ q.id }}" value="A" required class="mr-3 text-blue-600 focus:ring-blue-500">
+                    <span>{{ q.option_a }}</span>
+                </label>
+                <label class="flex items-center p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer text-sm font-medium transition">
+                    <input type="radio" name="question_{{ q.id }}" value="B" class="mr-3 text-blue-600 focus:ring-blue-500">
+                    <span>{{ q.option_b }}</span>
+                </label>
+                <label class="flex items-center p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer text-sm font-medium transition">
+                    <input type="radio" name="question_{{ q.id }}" value="C" class="mr-3 text-blue-600 focus:ring-blue-500">
+                    <span>{{ q.option_c }}</span>
+                </label>
+                <label class="flex items-center p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer text-sm font-medium transition">
+                    <input type="radio" name="question_{{ q.id }}" value="D" class="mr-3 text-blue-600 focus:ring-blue-500">
+                    <span>{{ q.option_d }}</span>
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-100 transition">
+            Submit Evaluation
+        </button>
+    </form>
+</div>
+{% endblock %}

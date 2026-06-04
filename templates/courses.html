@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}My Courses | Aethel.ai{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900">My Study Vault 📚</h1>
+        <p class="text-slate-500 mt-1">Manage and access your active subjects and documents.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between mb-4">
+                <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700">Active</span>
+                <span class="text-xs text-slate-400">4 Materials</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">Database Management Systems</h3>
+            <p class="text-sm text-slate-500 mb-6">Covers SQL architectures, indices, indexing, and transactional ACID parameters.</p>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mb-4 overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: 65%"></div>
+            </div>
+            <button class="w-full text-center bg-slate-50 hover:bg-slate-100 text-slate-700 py-2 rounded-xl text-sm font-medium transition">Open Course</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Aethel.ai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] font-sans antialiased text-slate-800">
+
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 hidden lg:flex flex-col">
+        <div class="p-8">
+            <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Aethel.ai</span>
+        </div>
+        <nav class="flex-grow px-4 space-y-1.5">
+    
+            <a href="{% url 'dashboard' %}" 
+               class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
+               {% if active_nav == 'dashboard' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-house text-base transition-transform group-hover:scale-110 {% if active_nav == 'dashboard' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> 
+                <span>Dashboard</span>
+            </a>
+        
+            <a href="{% url 'courses' %}" 
+               class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
+               {% if active_nav == 'courses' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-book-open text-base transition-transform group-hover:scale-110 {% if active_nav == 'courses' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> 
+                <span>My Courses</span>
+            </a>
+        
+            <a href="{% url 'ai_lab' %}" 
+               class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
+               {% if active_nav == 'ai_lab' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-bolt text-base transition-transform group-hover:scale-110 {% if active_nav == 'ai_lab' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> 
+                <span>AI Lab</span>
+            </a>
+        
+            <a href="{% url 'analytics' %}" 
+               class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
+               {% if active_nav == 'analytics' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                <i class="fa-solid fa-chart-line text-base transition-transform group-hover:scale-110 {% if active_nav == 'analytics' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> 
+                <span>Analytics</span>
+            </a>
+        
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <a href="{% url 'landing' %}" class="flex items-center space-x-3 text-red-500 hover:bg-red-50 p-3 rounded-xl transition">
+                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="lg:ml-64 min-h-screen">
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 h-16 flex items-center justify-between px-8">
+            <h2 class="text-lg font-semibold text-slate-700">Student Portal</h2>
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-slate-900">Student User</p>
+                    <p class="text-xs text-slate-500">Premium Plan</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold border-2 border-white shadow-md">
+                    S
+                </div>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900">Welcome back, Student! 👋</h1>
+                    <p class="text-slate-500 mt-1">Here is your AI-optimized study progress for today.</p>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all transform hover:scale-105 active:scale-95">
+                    Start New Quiz
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Course Mastery</p>
+                        <p class="text-2xl font-bold text-slate-900">78%</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Study Hours</p>
+                        <p class="text-2xl font-bold text-slate-900">12.4h</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center space-x-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Day Streak</p>
+                        <p class="text-2xl font-bold text-slate-900">5 Days</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div class="xl:col-span-2 space-y-6">
+                    <div class="bg-gradient-to-br from-indigo-600 to-blue-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden group">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold mb-2">Enhance Your Learning with AI</h3>
+                            <p class="text-blue-100 mb-6 max-w-md">Upload your lecture PDF or paste a YouTube link to generate a personalized adaptive quiz instantly.</p>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="bg-white text-blue-700 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-slate-50 transition active:scale-95">
+                                    <i class="fa-solid fa-file-pdf mr-2"></i> Upload PDF
+                                </button>
+                                <button class="bg-blue-500/30 text-white border border-white/20 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-500/50 transition active:scale-95">
+                                    <i class="fa-solid fa-video mr-2"></i> Video Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                        <h3 class="text-xl font-bold mb-6">Current Concept Analytics</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-2">
+                                    <span class="text-slate-600">Database Normalization</span>
+                                    <span class="text-blue-600">92%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-blue-600 h-full rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-2">
+                                    <span class="text-slate-600">Operating System Schedulers</span>
+                                    <span class="text-indigo-600">45%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-indigo-500 h-full rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                        <h3 class="text-lg font-bold mb-4">Study Roadmap</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                                <div class="mt-1 w-2 h-2 rounded-full bg-green-500"></div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800">Master ACID Properties</p>
+                                    <p class="text-xs text-slate-500">Completed 2h ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 rounded-2xl border border-dashed border-blue-200">
+                                <div class="mt-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                                <div>
+                                    <p class="text-sm font-bold text-blue-600">Review Quiz: OS Kernels</p>
+                                    <p class="text-xs text-blue-400 font-medium">Up next (15 mins)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 rounded-2xl grayscale opacity-50">
+                                <div class="mt-1 w-2 h-2 rounded-full bg-slate-300"></div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800">Final Mock Exam</p>
+                                    <p class="text-xs text-slate-500">Locked</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
