@@ -5,63 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aethel.ai{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+        if (localStorage.getItem('site-theme') === 'dark' || 
+            (!('site-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- KaTeX library for rapid, elegant mathematical equation rendering on the fly -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 </head>
-<body class="bg-[#F8FAFC] font-sans antialiased text-slate-800">
+<body class="bg-[#F8FAFC] dark:bg-slate-950 font-sans antialiased text-slate-800 dark:text-slate-100 transition-colors duration-200">
 
-    <aside class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 hidden lg:flex flex-col">
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 hidden lg:flex flex-col transition-colors duration-200">
         <div class="p-8">
             <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Aethel.ai</span>
         </div>
         
         <nav class="flex-grow px-4 space-y-1.5">
-            <a href="{% url 'dashboard' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'dashboard' or not active_nav %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-house text-base {% if active_nav == 'dashboard' or not active_nav %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Dashboard</span>
+            <a href="{% url 'dashboard' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'dashboard' or not active_nav %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-house text-base {% if active_nav == 'dashboard' or not active_nav %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>Dashboard</span>
             </a>
-            <a href="{% url 'courses' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'courses' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-book-open text-base {% if active_nav == 'courses' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>My Courses</span>
+            <a href="{% url 'courses' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'courses' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-book-open text-base {% if active_nav == 'courses' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>My Courses</span>
             </a>
-            <a href="{% url 'ai_lab' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'ai_lab' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-bolt text-base {% if active_nav == 'ai_lab' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>AI Lab</span>
+            <a href="{% url 'ai_lab' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'ai_lab' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-bolt text-base {% if active_nav == 'ai_lab' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>AI Lab</span>
             </a>
             
-            <!-- NEW NAVIGATION ITEM: Multimodal Doubt Solver & Audio Tutor -->
-            <a href="{% url 'doubt_solver' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'doubt_solver' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-wand-magic-sparkles text-base {% if active_nav == 'doubt_solver' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>AI Doubt Solver 💡</span>
+            <a href="{% url 'doubt_solver' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'doubt_solver' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-wand-magic-sparkles text-base {% if active_nav == 'doubt_solver' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>AI Doubt Solver 💡</span>
             </a>
 
-            <a href="{% url 'analytics' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'analytics' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-chart-line text-base {% if active_nav == 'analytics' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Analytics</span>
+            <a href="{% url 'study_quest' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'study_quest' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-gamepad text-base {% if active_nav == 'study_quest' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>Study Quest ⚔️</span>
+            </a>
+
+            <a href="{% url 'analytics' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'analytics' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-chart-line text-base {% if active_nav == 'analytics' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>Analytics</span>
             </a>
         </nav>
 
-        <div class="p-4 border-t border-slate-100 space-y-1">
-            <a href="{% url 'profile' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'profile' %} bg-blue-50 text-blue-600 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
-                <i class="fa-solid fa-user-gear text-base {% if active_nav == 'profile' %} text-blue-600 {% else %} text-slate-400 group-hover:text-slate-600 {% endif %}"></i> <span>Profile Settings</span>
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 space-y-1">
+            <a href="{% url 'profile' %}" class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 {% if active_nav == 'profile' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-user-gear text-base {% if active_nav == 'profile' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> <span>Profile Settings</span>
             </a>
-            <a href="{% url 'landing' %}" class="flex items-center space-x-3 text-red-500 hover:bg-red-50 p-3 rounded-xl transition-all font-medium text-sm">
+            <a href="{% url 'landing' %}" class="flex items-center space-x-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 p-3 rounded-xl transition-all font-medium text-sm">
                 <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
             </a>
         </div>
     </aside>
 
     <main class="lg:ml-64 min-h-screen">
-        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 h-16 flex items-center justify-between px-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Aethel AI Ecosystem</h2>
+        <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-8 transition-colors duration-200">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Aethel AI Ecosystem</h2>
             <a href="{% url 'profile' %}" class="flex items-center space-x-4 hover:opacity-85 transition duration-150">
                 <div class="text-right hidden sm:block">
-                    <p class="text-sm font-bold text-slate-900">
+                    <p class="text-sm font-bold text-slate-900 dark:text-slate-100">
                         {% if request.user.is_authenticated %}
                             {{ request.user.first_name|default:request.user.username }}
                         {% else %}
                             {{ request.session.profile_full_name|default:"Student User" }}
                         {% endif %}
                     </p>
-                    <p class="text-xs text-blue-600 font-medium">
+                    <p class="text-xs text-blue-600 dark:text-blue-400 font-medium">
                         {% if request.user.is_authenticated %}
                             {{ request.user.email }}
                         {% else %}
@@ -69,9 +82,14 @@
                         {% endif %}
                     </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-100 uppercase">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-100 dark:shadow-none uppercase">
+                    <!-- FIXED TEMPLATE SYNTAX ERROR: Avoid method chaining with filters -->
                     {% if request.user.is_authenticated %}
-                        {{ request.user.first_name|slice:":1"|default:request.user.username|slice:":1" }}
+                        {% if request.user.first_name %}
+                            {{ request.user.first_name|slice:":1" }}
+                        {% else %}
+                            {{ request.user.username|slice:":1" }}
+                        {% endif %}
                     {% else %}
                         {{ request.session.profile_full_name|slice:":1"|default:"S" }}
                     {% endif %}
@@ -80,27 +98,6 @@
         </header>
 
         <div class="p-8">
-            {% if messages %}
-                <div class="mb-6 space-y-2">
-                    {% for message in messages %}
-                        <div class="p-4 rounded-xl text-sm font-semibold flex items-center justify-between shadow-sm animate-fade-in transition-all duration-300
-                            {% if message.tags == 'success' %} bg-emerald-50 text-emerald-800 border border-emerald-100 {% else %} bg-rose-50 text-rose-800 border border-rose-100 {% endif %}">
-                            <div class="flex items-center space-x-3">
-                                {% if message.tags == 'success' %}
-                                    <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
-                                {% else %}
-                                    <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
-                                {% endif %}
-                                <span>{{ message }}</span>
-                            </div>
-                            <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
             {% block content %}{% endblock %}
         </div>
     </main>

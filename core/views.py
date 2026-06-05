@@ -3,22 +3,50 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login as django_login
+from django.contrib.auth import login as django_login, update_session_auth_hash
 from django.conf import settings
 from quizzes.models import StudyMaterial, Question, StudentPerformance
 from quizzes.ai_engine import extract_text_from_pdf, generate_ai_quiz
 from google import genai
 from google.genai import types
+from pydantic import BaseModel
+from typing import List
 from PIL import Image
-import os
+import json
+
+# Define strict Pydantic schemas for structured flashcard & quest question generation
+class FlashcardItem(BaseModel):
+    front_prompt: str
+    back_answer: str
+
+class BattleQuestionItem(BaseModel):
+    question_text: str
+    option_a: str
+    option_b: str
+    option_c: str
+    option_d: str
+    correct_answer: str
+    critical_explanation: str
+
+class StudyQuestSchema(BaseModel):
+    boss_name: str
+    boss_title: str
+    flashcards: List[FlashcardItem]
+    battle_questions: List[BattleQuestionItem]
+
 
 def landing_page(request):
     return render(request, 'landing.html')
 
 def auth_portal(request):
+    """
+    Handles student registration and login sessions. Automatically updates
+    both Django model and fallback session stores.
+    """
     if request.method == 'POST':
         username = request.POST.get('username') or request.POST.get('name') or request.POST.get('signUpName') or 'Student User'
         email = request.POST.get('email') or request.POST.get('loginEmail') or request.POST.get('signUpEmail') or 'student@lbsmca.in'
+        password = request.POST.get('password') or request.POST.get('loginPassword') or request.POST.get('signUpPassword') or 'temporary_password_123'
         
         request.session['profile_full_name'] = username
         request.session['profile_email'] = email
@@ -26,34 +54,38 @@ def auth_portal(request):
         try:
             user_obj = User.objects.filter(email=email).first()
             if not user_obj:
+                # Register a new student user
                 user_obj = User.objects.create_user(
                     username=email,
                     email=email,
-                    password='temporary_password_123',
+                    password=password,
                     first_name=username
                 )
+                messages.success(request, f"Welcome to Aethel, {username}! Account created.")
             else:
+                # Log in existing user
+                if not user_obj.check_password(password):
+                    messages.error(request, "Incorrect password. Please try again.")
+                    return render(request, 'auth.html')
+                
                 user_obj.first_name = username
                 user_obj.save()
+                messages.success(request, f"Welcome back, {username}! Signed in.")
+            
             django_login(request, user_obj)
         except Exception as e:
             print(f"Auth logging exception: {e}")
+            messages.success(request, f"Welcome back, {username}!")
             
-        messages.success(request, f"Welcome back, {username}! Signed in successfully.")
         return redirect('dashboard')
         
     return render(request, 'auth.html')
 
 def dashboard(request):
     performances = StudentPerformance.objects.all()
-    full_name = request.session.get('profile_full_name', 'Student User')
-    email = request.session.get('profile_email', 'student@lbsmca.in')
-    
     context = {
         'active_nav': 'dashboard',
-        'performances': performances,
-        'profile_name': full_name,
-        'profile_email': email,
+        'performances': performances
     }
     return render(request, 'dashboard.html', context)
 
@@ -170,24 +202,62 @@ def analytics(request):
     return render(request, 'analytics.html', {'active_nav': 'analytics', 'performances': performances})
 
 def profile_view(request):
+    """
+    Handles profile updates and password resets securely using 
+    standard Django auth and session verification.
+    """
     if request.method == 'POST':
-        full_name = request.POST.get('full_name')
-        email = request.POST.get('email')
-        prep_track = request.POST.get('prep_track')
-        education_level = request.POST.get('education_level', 'ug')
+        form_type = request.POST.get('form_type')
         
-        request.session['profile_full_name'] = full_name
-        request.session['profile_email'] = email
-        request.session['target_exam'] = prep_track
-        request.session['education_level'] = education_level
-        
-        if request.user.is_authenticated:
-            request.user.first_name = full_name
-            request.user.email = email
-            request.user.save()
+        # Action 1: Password Update
+        if form_type == 'update_password':
+            current_pwd = request.POST.get('current_password')
+            new_pwd = request.POST.get('new_password')
+            re_new_pwd = request.POST.get('re_new_password')
             
-        messages.success(request, f"Successfully saved profile settings!")
-        return redirect('profile')
+            if new_pwd != re_new_pwd:
+                messages.error(request, "New passwords do not match.")
+                return redirect('profile')
+            
+            if request.user.is_authenticated:
+                if not request.user.check_password(current_pwd):
+                    messages.error(request, "Incorrect current password.")
+                    return redirect('profile')
+                
+                request.user.set_password(new_pwd)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Password updated successfully!")
+            else:
+                mock_saved_pwd = request.session.get('profile_password', 'temporary_password_123')
+                if current_pwd != mock_saved_pwd:
+                    messages.error(request, "Incorrect current password.")
+                    return redirect('profile')
+                
+                request.session['profile_password'] = new_pwd
+                messages.success(request, "Simulated password updated!")
+                
+            return redirect('profile')
+            
+        # Action 2: Core Profile Details Update
+        else:
+            full_name = request.POST.get('full_name')
+            email = request.POST.get('email')
+            prep_track = request.POST.get('prep_track')
+            education_level = request.POST.get('education_level', 'ug')
+            
+            request.session['profile_full_name'] = full_name
+            request.session['profile_email'] = email
+            request.session['target_exam'] = prep_track
+            request.session['education_level'] = education_level
+            
+            if request.user.is_authenticated:
+                request.user.first_name = full_name
+                request.user.email = email
+                request.user.save()
+                
+            messages.success(request, "Successfully saved profile settings!")
+            return redirect('profile')
 
     total_uploaded = StudyMaterial.objects.count()
     completed_performances = StudentPerformance.objects.all()
@@ -200,71 +270,47 @@ def profile_view(request):
     }
     return render(request, 'profile.html', context)
 
-
 def doubt_solver_view(request):
-    """
-    Renders the dynamic Doubt Solver page and processes multimodal queries.
-    Uses genai.Client with the saved API key to handle text + images.
-    """
     if request.method == 'POST':
-        # Check if the request is an AJAX/Fetch API message submission
         question_text = request.POST.get('question', '')
-        education_level = request.POST.get('level', 'ug') # Grab active educational layer
+        education_level = request.POST.get('level', 'ug')
         uploaded_image = request.FILES.get('image')
 
-        # Map internal levels to friendly academic labels for the system prompt
         level_map = {
-            'middle_school': 'Middle School student (Class 5 to 8). Keep answers clear, supportive, use simple words, and avoid overly dense notation.',
-            'high_school': 'High School student (Class 9 to 10). Explain the logical basis and formulas step-by-step.',
-            'higher_secondary': 'Higher Secondary student (Class 11 to 12). Focus on deep structural understanding and exact formulas.',
-            'ug': 'Undergraduate University student. Keep it highly analytical and technical.',
-            'pg': 'Postgraduate Master Scholar. Provide rigorous academic proofs, structural details, and professional references.'
+            'middle_school': 'Middle School student (Class 5 to 8). Keep answers simple.',
+            'high_school': 'High School student (Class 9 to 10).',
+            'higher_secondary': 'Class 11 to 12 student.',
+            'ug': 'Undergraduate University student.',
+            'pg': 'Postgraduate Master Scholar.'
         }
         audience_directive = level_map.get(education_level, 'Undergraduate student.')
 
         if not question_text and not uploaded_image:
-            return JsonResponse({'error': 'Please provide either a question or an image.'}, status=400)
+            return JsonResponse({'error': 'Please provide a query or image.'}, status=400)
 
         if not settings.AI_API_KEY:
-            return JsonResponse({'error': 'AI configuration settings key is missing. Please add AI_API_KEY to your .env file.'}, status=500)
+            return JsonResponse({'error': 'AI configuration key is missing.'}, status=500)
 
         try:
-            # Initialize Gemini
             client = genai.Client(api_key=settings.AI_API_KEY)
-            
             prompt = f"""
-            You are "Aethel AI Tutor", a highly compassionate, world-class personal teacher.
-            You are assisting a student at the following tier level: {audience_directive}
-
-            Provide a clear, detailed, and beautifully structured explanation.
-            If the question contains mathematical equations, use standard LaTeX notation (like $...$ for inline or $$...$$ for block formulas).
-            Be encouraging! If an image is provided, examine it carefully to extract text, handwritten notes, diagrams, or questions.
+            You are "Aethel AI Tutor". Assist a student at this level: {audience_directive}
+            Use standard LaTeX notation ($...$ or $$...$$) for formulas.
             
-            Student's question: {question_text}
+            Student query: {question_text}
             """
-
             contents = [prompt]
-
-            # If there's an image, convert to PIL.Image and append to contents list
             if uploaded_image:
-                try:
-                    pil_img = Image.open(uploaded_image)
-                    contents.append(pil_img)
-                except Exception as img_err:
-                    return JsonResponse({'error': f'Failed to process the uploaded image: {str(img_err)}'}, status=400)
+                contents.append(Image.open(uploaded_image))
 
-            # Call Gemini
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
                 contents=contents,
             )
-
             return JsonResponse({'answer': response.text})
-
         except Exception as e:
-            return JsonResponse({'error': f'AI Engine Encountered an Error: {str(e)}'}, status=500)
+            return JsonResponse({'error': f'AI Error: {str(e)}'}, status=500)
 
-    # If GET, render the interactive chatbot interface page
     total_uploaded = StudyMaterial.objects.count()
     context = {
         'active_nav': 'doubt_solver',
@@ -272,3 +318,47 @@ def doubt_solver_view(request):
         'current_education_level': request.session.get('education_level', 'ug'),
     }
     return render(request, 'doubt_solver.html', context)
+
+def study_quest_view(request):
+    if request.method == 'POST':
+        topic = request.POST.get('topic', 'General Science')
+        education_level = request.POST.get('level', 'ug')
+
+        level_labels = {
+            'middle_school': 'Class 5 to 8. Keep it simple.',
+            'high_school': 'Class 9 to 10. Core concepts.',
+            'higher_secondary': 'Class 11 to 12. Physics/Math focus.',
+            'ug': 'Undergrad level.',
+            'pg': 'Postgraduate research level.'
+        }
+        audience_directive = level_labels.get(education_level, 'Undergraduate level.')
+
+        if not settings.AI_API_KEY:
+            return JsonResponse({'error': 'AI API Key is missing.'}, status=500)
+
+        prompt = f"""
+        You are "Aethel Game Master". The topic is: "{topic}".
+        Target level: {audience_directive}
+        Generate the study quest dataset matching the required Schema structure.
+        """
+
+        try:
+            client = genai.Client(api_key=settings.AI_API_KEY)
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=StudyQuestSchema,
+                    temperature=0.4,
+                )
+            )
+            return JsonResponse(json.loads(response.text))
+        except Exception as e:
+            return JsonResponse({'error': f'Failed to summon Boss: {str(e)}'}, status=500)
+
+    context = {
+        'active_nav': 'study_quest',
+        'current_education_level': request.session.get('education_level', 'ug'),
+    }
+    return render(request, 'study_quest.html', context)

@@ -5,41 +5,64 @@
 {% block content %}
 <div class="space-y-8 max-w-4xl">
     
-    <!-- Hero Profile Branding Header Card -->
-    <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm flex flex-col md:flex-row items-center md:items-start justify-between gap-6 relative overflow-hidden">
-        <div class="absolute -right-12 -top-12 w-48 h-48 bg-gradient-to-tr from-blue-500/10 to-indigo-500/5 rounded-full blur-2xl"></div>
+    <!-- Top Header Block with Page Title & Corner Theme Switcher -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">My Profile Settings ⚙️</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Configure your personal parameters, target exams, and system preferences.</p>
+        </div>
         
+        <!-- Sleek Theme Toggle Widget Moved cleanly to the top-right corner of the workspace page -->
+        <div class="flex items-center space-x-2 bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors duration-200 self-start sm:self-center">
+            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 pl-2 uppercase tracking-wider hidden sm:inline-block">Theme:</span>
+            <button onclick="toggleGlobalTheme('light')" id="themeBtnLight" class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200 bg-white dark:bg-transparent text-amber-500 dark:text-slate-400 shadow-xs dark:shadow-none hover:scale-105">
+                <i class="fa-solid fa-sun text-sm"></i>
+            </button>
+            <button onclick="toggleGlobalTheme('dark')" id="themeBtnDark" class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200 bg-transparent dark:bg-slate-700 text-slate-400 dark:text-indigo-400 hover:scale-105">
+                <i class="fa-solid fa-moon text-sm"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Hero Profile Branding Header Card -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm flex flex-col md:flex-row items-center md:items-start justify-between gap-6 relative overflow-hidden transition-colors duration-200">
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-gradient-to-tr from-blue-500/10 to-indigo-500/5 rounded-full blur-2xl"></div>
+
         <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 z-10">
             <!-- Sleek Graduated Avatar Frame -->
             <div class="relative group">
                 <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-500 p-1 shadow-lg transform transition group-hover:scale-105 duration-200">
-                    <div class="w-full h-full bg-white rounded-xl flex items-center justify-center text-4xl font-extrabold text-indigo-600 uppercase">
+                    <div class="w-full h-full bg-white rounded-xl dark:bg-slate-900 flex items-center justify-center text-4xl font-extrabold text-indigo-600 uppercase">
                         {% if request.user.is_authenticated %}
-                            {{ request.user.first_name|slice:":1"|default:request.user.username|slice:":1" }}
+                            {% if request.user.first_name %}
+                                {{ request.user.first_name|slice:":1" }}
+                            {% else %}
+                                {{ request.user.username|slice:":1" }}
+                            {% endif %}
                         {% else %}
                             {{ request.session.profile_full_name|slice:":1"|default:"S" }}
                         {% endif %}
                     </div>
                 </div>
-                <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white" title="Active Premium Member">
+                <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full flex items-center justify-center text-[10px] text-white" title="Active Premium Member">
                     <i class="fa-solid fa-check"></i>
                 </span>
             </div>
             
             <div class="text-center sm:text-left space-y-1">
                 <div class="flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                    <h1 class="text-2xl font-bold text-slate-900">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {% if request.user.is_authenticated %}
                             {{ request.user.first_name|default:request.user.username }}
                         {% else %}
                             {{ request.session.profile_full_name|default:"Student User" }}
                         {% endif %}
                     </h1>
-                    <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-blue-50 text-blue-600 border border-blue-100 uppercase tracking-wider">Premium Member</span>
+                    <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-900/55 uppercase tracking-wider">Premium Member</span>
                 </div>
                 <!-- Dynamic Education Subtitle -->
-                <p id="profileEduSubtitle" class="text-slate-500 text-sm font-semibold">Loading Student Track...</p>
-                <p class="text-slate-400 text-xs flex items-center justify-center sm:justify-start gap-1">
+                <p id="profileEduSubtitle" class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Loading Student Track...</p>
+                <p class="text-slate-400 dark:text-slate-500 text-xs flex items-center justify-center sm:justify-start gap-1">
                     <i class="fa-regular fa-envelope"></i> 
                     {% if request.user.is_authenticated %}
                         {{ request.user.email }}
@@ -50,10 +73,10 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-center md:items-end justify-center z-10 text-center md:text-right space-y-1">
-            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Aethel Prep Rank</span>
+        <div class="flex flex-col items-center md:items-end justify-center z-10 text-center md:text-right space-y-1 pt-6 md:pt-0">
+            <span class="text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider">Aethel Prep Rank</span>
             <span class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Top 12%</span>
-            <span id="levelSyllabusBadge" class="text-xs text-indigo-500 font-medium">Syllabus Level: General</span>
+            <span id="levelSyllabusBadge" class="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Syllabus Level: General</span>
         </div>
     </div>
 
@@ -62,30 +85,30 @@
         
         <!-- Left Side: Mini statistics Dashboard Deck -->
         <div class="space-y-6">
-            <div class="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm space-y-6">
-                <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">My Stats</h3>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm space-y-6 transition-colors duration-200">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">My Stats</h3>
                 
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between p-3 bg-slate-50/60 rounded-xl">
+                    <div class="flex items-center justify-between p-3 bg-slate-50/60 dark:bg-slate-800/50 rounded-xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600"><i class="fa-solid fa-file-pdf"></i></div>
-                            <span class="text-xs font-semibold text-slate-600">Materials Ingested</span>
+                            <div class="w-8 h-8 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center text-blue-600"><i class="fa-solid fa-file-pdf"></i></div>
+                            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Materials Ingested</span>
                         </div>
-                        <span class="text-sm font-bold text-slate-800">{{ total_uploaded }}</span>
+                        <span class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ total_uploaded }}</span>
                     </div>
 
-                    <div class="flex items-center justify-between p-3 bg-slate-50/60 rounded-xl">
+                    <div class="flex items-center justify-between p-3 bg-slate-50/60 dark:bg-slate-800/50 rounded-xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600"><i class="fa-solid fa-award"></i></div>
-                            <span class="text-xs font-semibold text-slate-600">Active Concepts</span>
+                            <div class="w-8 h-8 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center text-indigo-600"><i class="fa-solid fa-award"></i></div>
+                            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Active Concepts</span>
                         </div>
-                        <span class="text-sm font-bold text-slate-800">{{ completed_performances.count }}</span>
+                        <span class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ completed_performances.count }}</span>
                     </div>
 
-                    <div class="flex items-center justify-between p-3 bg-slate-50/60 rounded-xl">
+                    <div class="flex items-center justify-between p-3 bg-slate-50/60 dark:bg-slate-800/50 rounded-xl">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600"><i class="fa-solid fa-star"></i></div>
-                            <span class="text-xs font-semibold text-slate-600">LMS Access</span>
+                            <div class="w-8 h-8 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg flex items-center justify-center text-amber-600"><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">LMS Access</span>
                         </div>
                         <span class="text-xs font-bold text-slate-800 text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-md">Unlimited</span>
                     </div>
@@ -93,35 +116,38 @@
             </div>
         </div>
 
-        <!-- Right Side: Profile Update Editor Form -->
-        <div class="md:col-span-2 space-y-6">
-            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm">
-                <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6">Account & Prep Settings</h3>
+        <!-- Right Side: Profile Forms -->
+        <div class="md:col-span-2 space-y-8">
+            
+            <!-- Block 1: Account & Prep Settings Form -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm transition-colors duration-200">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">Account & Prep Settings</h3>
                 
                 <form class="space-y-6" method="POST" action="{% url 'profile' %}" id="profileSettingsForm">
                     {% csrf_token %}
+                    <input type="hidden" name="form_type" value="update_profile">
                     
                     <!-- Standard Personal Details -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Full Name</label>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Full Name</label>
                             <input type="text" name="full_name" required 
                                    value="{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username }}{% else %}{{ request.session.profile_full_name|default:'Student User' }}{% endif %}" 
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                                   class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Email Address</label>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Email Address</label>
                             <input type="email" name="email" required 
                                    value="{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}{{ request.session.profile_email|default:'student@lbsmca.in' }}{% endif %}" 
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                                   class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
                         </div>
                     </div>
 
                     <!-- Target Focus Path Configuration (Adapted for 5th to PG/UG Levels) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Education Level</label>
-                            <select name="education_level" id="educationLevel" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Education Level</label>
+                            <select name="education_level" id="educationLevel" class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
                                 <option value="middle_school">Middle School (Class 5 - 8)</option>
                                 <option value="high_school">High School (Class 9 - 10)</option>
                                 <option value="higher_secondary">Higher Secondary (Class 11 - 12)</option>
@@ -130,35 +156,90 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Active Target Exam / Focus</label>
-                            <select name="prep_track" id="prepTrack" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
-                                <!-- Dynamically populated by JavaScript based on chosen Education Level -->
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Active Target Exam / Focus</label>
+                            <select name="prep_track" id="prepTrack" class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
+                                <!-- Dynamically populated by JavaScript -->
                             </select>
                         </div>
                     </div>
 
                     <!-- Target Coaching / Institution Information -->
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Institution / Coaching Focus</label>
-                        <input type="text" name="institution_focus" id="institutionFocus" value="Self Study / School Board Track" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Institution / Coaching Focus</label>
+                        <input type="text" name="institution_focus" id="institutionFocus" value="Self Study / School Board Track" class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
                     </div>
 
-                    <div class="pt-4 border-t border-slate-100 flex justify-end">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-100 transition transform active:scale-95">
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-850 flex justify-end">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-100 dark:shadow-none transition transform active:scale-95">
                             Save Changes
                         </button>
                     </div>
                 </form>
             </div>
+
+            <!-- Block 2: Change Password Update Form Block -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm transition-colors duration-200">
+                <div class="flex items-center space-x-3 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
+                    <div class="w-8 h-8 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Update Password Settings</h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Change your system password. This update applies to future portal logins immediately.</p>
+                    </div>
+                </div>
+                
+                <form class="space-y-6" method="POST" action="{% url 'profile' %}" id="passwordUpdateForm" onsubmit="return validatePasswordChangeForm()">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="update_password">
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Enter Current Password Box -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Enter Current Password</label>
+                            <input type="password" name="current_password" required placeholder="••••••••"
+                                   class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
+                        </div>
+
+                        <!-- Enter New Password Box -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Enter New Password</label>
+                                <input type="password" name="new_password" id="newPassword" required placeholder="••••••••"
+                                       class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
+                            </div>
+                            
+                            <!-- Re-enter New Password Box -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Re-enter New Password</label>
+                                <input type="password" name="re_new_password" id="reNewPassword" required placeholder="••••••••"
+                                       class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clientside matching warning container -->
+                    <div id="passwordMismatchWarning" class="hidden p-4 rounded-xl border border-rose-100 bg-rose-50 dark:bg-rose-950/20 text-rose-800 dark:text-rose-300 text-xs font-semibold flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
+                        <span>New passwords do not match. Please verify inputs.</span>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-850 flex justify-end">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-100 dark:shadow-none transition transform active:scale-95">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
     </div>
 
 </div>
 
-<!-- Interactive Dynamic Selection & State Handler Scripts -->
+<!-- Interactive Theme Switching, Dynamic Selection & State Handler Scripts -->
 <script>
-    // Unified exam choices dataset mapped by educational tiers
     const educationalPaths = {
         middle_school: {
             subTitle: "Middle School Scholar (Class 5 - 8 Track)",
@@ -225,25 +306,19 @@
     const badgeEl = document.getElementById("levelSyllabusBadge");
     const institutionInput = document.getElementById("institutionFocus");
 
-    // Dynamic Options Updater Function
     function syncEducationalTiers(savedExamValue = null) {
         const selectedTier = eduSelector.value;
         const configuration = educationalPaths[selectedTier];
 
-        // 1. Update Profile Card Headings dynamically
         subtitleEl.innerText = configuration.subTitle;
         badgeEl.innerText = `Syllabus ${configuration.badgeLevel}`;
-
-        // 2. Clear out older track options in preparation for the fresh batch
         prepSelector.innerHTML = "";
 
-        // 3. Render and attach the fresh selection track nodes
         configuration.exams.forEach(exam => {
             const opt = document.createElement("option");
             opt.value = exam.value;
             opt.innerText = exam.label;
             
-            // Check if this option should be selected
             if (savedExamValue && exam.value === savedExamValue) {
                 opt.selected = true;
             } else if (!savedExamValue && exam.value === "{{ current_prep_track }}") {
@@ -252,13 +327,24 @@
             prepSelector.appendChild(opt);
         });
 
-        // 4. Update the institution placeholder helper only if the user hasn't typed a custom choice
         if (!localStorage.getItem("user_custom_institution_typed")) {
             institutionInput.value = configuration.defaultInstitution;
         }
     }
 
-    // Capture explicit user interaction changes to update local storage
+    function validatePasswordChangeForm() {
+        const newPwd = document.getElementById("newPassword").value;
+        const reNewPwd = document.getElementById("reNewPassword").value;
+        const warningEl = document.getElementById("passwordMismatchWarning");
+        
+        if (newPwd !== reNewPwd) {
+            warningEl.classList.remove("hidden");
+            return false;
+        }
+        warningEl.classList.add("hidden");
+        return true;
+    }
+
     eduSelector.addEventListener("change", () => {
         localStorage.setItem("aethel_saved_edu_level", eduSelector.value);
         syncEducationalTiers();
@@ -273,9 +359,36 @@
         localStorage.setItem("aethel_saved_institution", institutionInput.value);
     });
 
-    // Run synchronization check upon document load
+    function updateThemeUI(theme) {
+        const lightBtn = document.getElementById('themeBtnLight');
+        const darkBtn = document.getElementById('themeBtnDark');
+
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('site-theme', 'dark');
+            if (lightBtn && darkBtn) {
+                lightBtn.classList.remove('bg-white', 'text-amber-500', 'shadow-xs');
+                lightBtn.classList.add('text-slate-400');
+                darkBtn.classList.add('bg-slate-700', 'text-indigo-400');
+                darkBtn.classList.remove('text-slate-400');
+            }
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('site-theme', 'light');
+            if (lightBtn && darkBtn) {
+                lightBtn.classList.add('bg-white', 'text-amber-500', 'shadow-xs');
+                lightBtn.classList.remove('text-slate-400');
+                darkBtn.classList.remove('bg-slate-700', 'text-indigo-400');
+                darkBtn.classList.add('text-slate-400');
+            }
+        }
+    }
+
+    function toggleGlobalTheme(mode) {
+        updateThemeUI(mode);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
-        // Retrieve and restore persistent settings states from client browser memory (localStorage)
         const savedEdu = localStorage.getItem("aethel_saved_edu_level");
         const savedExam = localStorage.getItem("aethel_saved_prep_track");
         const savedInst = localStorage.getItem("aethel_saved_institution");
@@ -288,9 +401,12 @@
         }
 
         syncEducationalTiers(savedExam);
+
+        const currentTheme = localStorage.getItem('site-theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        updateThemeUI(currentTheme);
     });
 
-    // Ensure state synchronizes correctly upon form submissions
     document.getElementById("profileSettingsForm").addEventListener("submit", () => {
         localStorage.setItem("aethel_saved_edu_level", eduSelector.value);
         localStorage.setItem("aethel_saved_prep_track", prepSelector.value);

@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from core.views import (
     landing_page, auth_portal, dashboard, courses, 
-    ai_lab, analytics, take_quiz, profile_view, doubt_solver_view
+    ai_lab, analytics, take_quiz, profile_view, 
+    doubt_solver_view, study_quest_view
 )
 
 urlpatterns = [
@@ -15,7 +16,6 @@ urlpatterns = [
     path('analytics/', analytics, name='analytics'),
     path('quiz/<int:material_id>/', take_quiz, name='take_quiz'), 
     path('profile/', profile_view, name='profile'),
-    
-    # NEW FEATURE: Interactive Multimodal Doubt Solver Chatbot route
     path('doubt-solver/', doubt_solver_view, name='doubt_solver'),
+    path('study-quest/', study_quest_view, name='study_quest'),
 ]

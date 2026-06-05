@@ -8,15 +8,15 @@
     <!-- Header Summary Info -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">AI Doubt Solver & Audio Tutor 💡🔮</h1>
-            <p class="text-slate-500 mt-1">Upload study images, ask question snapshots, and hear generated audio breakdowns instantly.</p>
+            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">AI Doubt Solver & Audio Tutor 💡🔮</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Upload study images, ask question snapshots, and hear generated audio breakdowns instantly.</p>
         </div>
         
         <!-- Live Academic Grade Tier Badge -->
-        <div class="bg-white border border-slate-200 px-4 py-2 rounded-2xl shadow-sm flex items-center space-x-2">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-2 rounded-2xl shadow-sm flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-bold text-slate-400 uppercase">AUDIENCE STYLE:</span>
-            <span id="activeEduBadge" class="text-xs font-extrabold text-blue-600 uppercase">UG (Bachelors)</span>
+            <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">AUDIENCE STYLE:</span>
+            <span id="activeEduBadge" class="text-xs font-extrabold text-blue-600 dark:text-blue-400 uppercase">UG (Bachelors)</span>
         </div>
     </div>
 
@@ -24,66 +24,66 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-14rem)] min-h-[500px]">
         
         <!-- Left Panel: Instruction & Capabilities Info -->
-        <div class="lg:col-span-1 bg-white border border-slate-200/60 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6">
+        <div class="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6">
             <div class="space-y-4">
-                <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">Platform Capability</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">Platform Capability</h3>
                 
                 <div class="space-y-3.5">
                     <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-camera"></i></div>
+                        <div class="w-7 h-7 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-camera"></i></div>
                         <div>
-                            <h4 class="text-xs font-bold text-slate-700">Scan Textbook Photos</h4>
-                            <p class="text-[10px] text-slate-400 leading-relaxed">Snapshot questions from CBSE or Govt. textbooks.</p>
+                            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Scan Textbook Photos</h4>
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">Snapshot questions from CBSE or Govt. textbooks.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-calculator"></i></div>
+                        <div class="w-7 h-7 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-calculator"></i></div>
                         <div>
-                            <h4 class="text-xs font-bold text-slate-700">Math Formula Solver</h4>
-                            <p class="text-[10px] text-slate-400 leading-relaxed">Renders clean LaTeX diagrams and algebraic variables.</p>
+                            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Math Formula Solver</h4>
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">Renders clean LaTeX diagrams and algebraic variables.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-volume-high"></i></div>
+                        <div class="w-7 h-7 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg flex items-center justify-center text-xs flex-shrink-0 mt-0.5"><i class="fa-solid fa-volume-high"></i></div>
                         <div>
-                            <h4 class="text-xs font-bold text-slate-700">Audio Read Aloud</h4>
-                            <p class="text-[10px] text-slate-400 leading-relaxed">Click Play to listen to customized auditory lectures.</p>
+                            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Audio Read Aloud</h4>
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">Click Play to listen to customized auditory lectures.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Voice Customizer Settings Deck -->
-            <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-3">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+            <div class="p-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl space-y-3">
+                <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-sliders text-blue-500"></i> Audio Voice Settings
                 </h4>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Narrator Accent Style</label>
-                    <select id="voiceAccentSelect" class="w-full bg-white border border-slate-200 text-xs font-semibold rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Narrator Accent Style</label>
+                    <select id="voiceAccentSelect" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-lg p-2 focus:outline-none focus:border-blue-500 text-slate-800 dark:text-slate-100">
                         <option value="en-IN">Indian English Accent 🇮🇳</option>
                         <option value="en-US">US English Accent 🇺🇸</option>
                         <option value="en-GB">British English Accent 🇬🇧</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Reading Rate (Speed)</label>
-                    <input type="range" id="voiceSpeedRange" min="0.8" max="1.5" step="0.1" value="1.0" class="w-full accent-blue-600 h-1 bg-slate-200 rounded-lg cursor-pointer">
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Reading Rate (Speed)</label>
+                    <input type="range" id="voiceSpeedRange" min="0.8" max="1.5" step="0.1" value="1.0" class="w-full accent-blue-600 h-1 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer">
                 </div>
             </div>
         </div>
 
         <!-- Right Panel (3 Columns): Immersive Interactive Chat Container -->
-        <div class="lg:col-span-3 bg-white border border-slate-200/60 rounded-3xl shadow-sm flex flex-col h-full overflow-hidden relative">
+        <div class="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl shadow-sm flex flex-col h-full overflow-hidden relative">
             
             <!-- Chat Header Active Context banner -->
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-blue-100">
                         A
                     </div>
                     <div>
-                        <h3 class="text-xs font-bold text-slate-800">Aethel AI Tutor 🧑‍🏫</h3>
+                        <h3 class="text-xs font-bold text-slate-800 dark:text-slate-200">Aethel AI Tutor 🧑‍🏫</h3>
                         <p class="text-[10px] text-emerald-500 font-medium flex items-center gap-1">
                             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span> Multimodal Context Active
                         </p>
@@ -99,11 +99,11 @@
                 
                 <!-- Initial welcoming message -->
                 <div class="flex items-start space-x-3 max-w-[85%]">
-                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs flex-shrink-0">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs flex-shrink-0">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <div class="bg-slate-50 rounded-2xl rounded-tl-none p-4 text-xs text-slate-700 leading-relaxed shadow-sm border border-slate-100/50">
-                        <p class="font-bold text-slate-900 mb-1">Hello! I am Aethel, your AI Tutor.</p>
+                    <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm border border-slate-100/50 dark:border-slate-700/50">
+                        <p class="font-bold text-slate-900 dark:text-slate-100 mb-1">Hello! I am Aethel, your AI Tutor.</p>
                         I can help you solve doubt questions from any subject! 
                         <ul class="list-disc pl-4 mt-2 space-y-1">
                             <li>Snap and upload a photo of a textbook problem (Math, Science, logic).</li>
@@ -116,13 +116,13 @@
             </div>
 
             <!-- Image preview indicator area (above typing bar) -->
-            <div id="imagePreviewContainer" class="hidden px-6 py-2 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+            <div id="imagePreviewContainer" class="hidden px-6 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex items-center justify-between">
                 <div class="flex items-center space-x-2.5">
-                    <div class="relative w-12 h-12 rounded-lg border border-slate-200 overflow-hidden bg-white">
+                    <div class="relative w-12 h-12 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden bg-white">
                         <img id="imagePreviewThumbnail" src="" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-800 line-clamp-1" id="previewFileName">Attached Image</p>
+                        <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 line-clamp-1" id="previewFileName">Attached Image</p>
                         <p class="text-[8px] text-blue-600 font-semibold uppercase">READY TO TRANSMIT</p>
                     </div>
                 </div>
@@ -132,19 +132,19 @@
             </div>
 
             <!-- Interactive Entry Form -->
-            <div class="p-4 border-t border-slate-100 bg-white">
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
                 <form id="doubtQueryForm" onsubmit="handleQuerySubmit(event)" class="flex items-center space-x-3 relative">
                     <!-- File input trigger -->
-                    <label class="w-11 h-11 bg-slate-50 hover:bg-slate-100 text-slate-500 border border-slate-200 rounded-xl flex items-center justify-center cursor-pointer transition flex-shrink-0 shadow-sm" title="Upload Image Question">
+                    <label class="w-11 h-11 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center cursor-pointer transition flex-shrink-0 shadow-sm" title="Upload Image Question">
                         <i class="fa-solid fa-image text-base"></i>
                         <input type="file" name="image" id="doubtImageFile" accept="image/*" class="hidden" onchange="previewSelectedImage(this)">
                     </label>
 
                     <!-- Text input area -->
-                    <input type="text" id="doubtTextInput" required placeholder="Type your doubt or ask about the uploaded image..." class="flex-grow bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition duration-200">
+                    <input type="text" id="doubtTextInput" required placeholder="Type your doubt or ask about the uploaded image..." class="flex-grow bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-850 transition duration-200">
 
                     <!-- Send button with loader state -->
-                    <button type="submit" id="sendBtn" class="w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-100 transition flex-shrink-0 active:scale-95">
+                    <button type="submit" id="sendBtn" class="w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-100 dark:shadow-none transition flex-shrink-0 active:scale-95">
                         <i class="fa-solid fa-paper-plane text-sm" id="sendIcon"></i>
                         <div class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" id="sendSpinner"></div>
                     </button>
@@ -159,14 +159,12 @@
 
 <!-- Voice TTS and Chat Controller Javascript logic -->
 <script>
-    // Fetch profile education variables from localStorage fallback if available
     const savedLevel = localStorage.getItem("aethel_saved_edu_level") || "ug";
     document.getElementById("activeEduBadge").innerText = savedLevel.replace('_', ' ');
 
     let activeSpeechUtterance = null;
     let activeSpeakerButton = null;
 
-    // Image upload handler preview
     function previewSelectedImage(input) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
@@ -192,62 +190,53 @@
         }
         document.getElementById('messagesArea').innerHTML = `
             <div class="flex items-start space-x-3 max-w-[85%]">
-                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs flex-shrink-0">
+                <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs flex-shrink-0">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
-                <div class="bg-slate-50 rounded-2xl rounded-tl-none p-4 text-xs text-slate-700 leading-relaxed shadow-sm border border-slate-100/50">
-                    <p class="font-bold text-slate-900 mb-1">Console Cleared!</p>
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm border border-slate-100/50 dark:border-slate-700/50">
+                    <p class="font-bold text-slate-900 dark:text-slate-100 mb-1">Console Cleared!</p>
                     Upload a new image or ask any textbook doubt to begin.
                 </div>
             </div>
         `;
     }
 
-    // Text to Speech Voice Synthesizer
     function handleReadAloud(textPayload, btnElement) {
         if (!window.speechSynthesis) {
-            alert("Your browser does not support the SpeechSynthesis Web Audio API.");
+            alert("Your browser does not support Speech Synthesis.");
             return;
         }
 
-        // Toggle playback: If clicked while playing the same message, stop it
         if (window.speechSynthesis.speaking && activeSpeakerButton === btnElement) {
             window.speechSynthesis.cancel();
             resetAudioButtonState(btnElement);
             return;
         }
 
-        // Cancel any active speech before beginning a new lecture
         window.speechSynthesis.cancel();
         if (activeSpeakerButton) {
             resetAudioButtonState(activeSpeakerButton);
         }
 
-        // Clean LaTeX and markdown annotations from output string to make auditory speaking natural
         let speakableText = textPayload
-            .replace(/\$\$([\s\S]*?)\$\$/g, '$1') // Remove block math
-            .replace(/\$([\s\S]*?)\$/g, '$1')     // Remove inline math
-            .replace(/[*#`_\-]/g, '')             // Remove markdown decorators
+            .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
+            .replace(/\$([\s\S]*?)\$/g, '$1')
+            .replace(/[*#`_\-]/g, '')
             .trim();
 
         const utterance = new SpeechSynthesisUtterance(speakableText);
-        
-        // Retrieve voice choices from settings select options
         const targetLocale = document.getElementById("voiceAccentSelect").value;
         const voices = window.speechSynthesis.getVoices();
         
-        // Find best match matching the locale choice
         let voiceChoice = voices.find(v => v.lang.startsWith(targetLocale));
         if (voiceChoice) {
             utterance.voice = voiceChoice;
         }
 
-        // Speed rates
         utterance.rate = parseFloat(document.getElementById("voiceSpeedRange").value);
 
-        // UI animations
         btnElement.innerHTML = '<i class="fa-solid fa-pause text-xs"></i><span class="text-[9px] font-bold">Speaking</span>';
-        btnElement.classList.remove('bg-slate-100', 'text-slate-600');
+        btnElement.classList.remove('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800', 'dark:text-slate-300');
         btnElement.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
 
         activeSpeechUtterance = utterance;
@@ -266,7 +255,7 @@
 
     function resetAudioButtonState(btn) {
         btn.innerHTML = '<i class="fa-solid fa-volume-high text-xs"></i><span class="text-[9px] font-bold">Read Aloud</span>';
-        btn.classList.add('bg-slate-100', 'text-slate-600');
+        btn.classList.add('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800', 'dark:text-slate-300');
         btn.classList.remove('bg-blue-600', 'text-white', 'animate-pulse');
         if (activeSpeakerButton === btn) {
             activeSpeakerButton = null;
@@ -274,7 +263,6 @@
         }
     }
 
-    // Process real-time question submit
     async function handleQuerySubmit(event) {
         event.preventDefault();
         
@@ -290,12 +278,10 @@
 
         if (!questionValue && !hasImage) return;
 
-        // Toggle Loading Button states
         sendBtn.disabled = true;
         sendIcon.classList.add("hidden");
         sendSpinner.classList.remove("hidden");
 
-        // 1. Render User message in UI stream
         let userMsgHTML = `
             <div class="flex items-start space-x-3 justify-end ml-auto max-w-[85%]">
                 <div class="bg-blue-600 text-white rounded-2xl rounded-tr-none p-4 text-xs leading-relaxed shadow-sm">
@@ -311,7 +297,7 @@
         userMsgHTML += `
                     <p>${questionValue}</p>
                 </div>
-                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/55 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-bold flex-shrink-0">
                     ME
                 </div>
             </div>
@@ -319,10 +305,8 @@
         messagesArea.insertAdjacentHTML('beforeend', userMsgHTML);
         messagesArea.scrollTop = messagesArea.scrollHeight;
 
-        // Clean user input text
         textInput.value = "";
 
-        // 2. Prepare Form Data parameters to submit to view controller
         const formData = new FormData();
         formData.append('question', questionValue);
         formData.append('level', savedLevel);
@@ -331,17 +315,15 @@
         }
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-        // Hide preview thumbnail
         removeAttachedImage();
 
-        // Add "Thinking" dynamic message placeholder
         const thinkingId = "thinking_" + Date.now();
         const thinkingHTML = `
             <div class="flex items-start space-x-3 max-w-[85%]" id="${thinkingId}">
-                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs flex-shrink-0">
+                <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs flex-shrink-0">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <div class="bg-slate-50 rounded-2xl rounded-tl-none p-4 text-xs text-slate-400 font-medium leading-relaxed border border-slate-100/50 flex items-center space-x-2">
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 text-xs text-slate-400 font-medium leading-relaxed border border-slate-100/50 flex items-center space-x-2">
                     <div class="flex space-x-1">
                         <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
                         <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
@@ -355,37 +337,28 @@
         messagesArea.scrollTop = messagesArea.scrollHeight;
 
         try {
-            // Trigger AJAX request
             const response = await fetch("{% url 'doubt_solver' %}", {
                 method: 'POST',
                 body: formData
             });
 
             const data = await response.json();
-            
-            // Delete dynamic loader
             document.getElementById(thinkingId).remove();
 
             if (data.answer) {
-                // Escape answer string for JavaScript string handling in Speech Synthesis triggers
                 const escapedAnswer = data.answer.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-                
-                // Format response layout bubble with built-in TTS Trigger node
                 const uniqueResponseId = "resp_" + Date.now();
                 const tutorMsgHTML = `
                     <div class="flex items-start space-x-3 max-w-[85%]">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs flex-shrink-0">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs flex-shrink-0">
                             <i class="fa-solid fa-graduation-cap"></i>
                         </div>
-                        <div class="bg-slate-50 rounded-2xl rounded-tl-none p-5 text-xs text-slate-700 leading-relaxed shadow-sm border border-slate-100/50 space-y-4">
-                            <!-- Text Response Segment -->
-                            <div class="prose max-w-none text-slate-700 space-y-2 markdown-target" id="${uniqueResponseId}">
+                        <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl rounded-tl-none p-5 text-xs text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm border border-slate-100/50 dark:border-slate-700/50 space-y-4">
+                            <div class="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 space-y-2 markdown-target" id="${uniqueResponseId}">
                                 ${data.answer.replace(/\n/g, '<br>')}
                             </div>
-                            
-                            <!-- Integrated Interactive Audio player widget bar -->
-                            <div class="pt-3 border-t border-slate-200/50 flex items-center space-x-2">
-                                <button onclick="handleReadAloud('${escapedAnswer}', this)" class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold transition">
+                            <div class="pt-3 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center space-x-2">
+                                <button onclick="handleReadAloud('${escapedAnswer}', this)" class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-lg text-[10px] font-bold transition">
                                     <i class="fa-solid fa-volume-high text-xs"></i> <span>Read Aloud</span>
                                 </button>
                                 <span class="text-[9px] text-slate-400 font-semibold uppercase">Speech-Enabled</span>
@@ -394,8 +367,6 @@
                     </div>
                 `;
                 messagesArea.insertAdjacentHTML('beforeend', tutorMsgHTML);
-                
-                // Trigger KaTeX parsing to render any mathematical/science formulas instantly
                 if (window.renderMathInElement) {
                     renderMathInElement(document.getElementById(uniqueResponseId));
                 }
@@ -404,9 +375,8 @@
             }
         } catch (err) {
             document.getElementById(thinkingId).remove();
-            renderErrorBubble("Network connection error. Please verify that your local Django server is active.");
+            renderErrorBubble("Network connection error.");
         } finally {
-            // Restore send button state
             sendBtn.disabled = false;
             sendIcon.classList.remove("hidden");
             sendSpinner.classList.add("hidden");
@@ -420,8 +390,8 @@
                 <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs flex-shrink-0">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <div class="bg-rose-50 rounded-2xl rounded-tl-none p-4 text-xs text-rose-800 leading-relaxed shadow-sm border border-rose-100/50">
-                    <p class="font-bold text-rose-900 mb-1">Aethel Encountered an Error</p>
+                <div class="bg-rose-50 dark:bg-rose-950 rounded-2xl rounded-tl-none p-4 text-xs text-rose-800 dark:text-rose-300 leading-relaxed shadow-sm border border-rose-100/50">
+                    <p class="font-bold text-rose-900 dark:text-rose-100 mb-1">Aethel Encountered an Error</p>
                     ${errorText}
                 </div>
             </div>

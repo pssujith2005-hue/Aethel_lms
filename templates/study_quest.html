@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Study Quest | Aethel.ai{% endblock %}
+
+{% block content %}
+<div class="space-y-8 max-w-5xl relative">
+
+    <!-- 1. CELEBRATION GAME OVERLAY PANEL (Triggers on Victory or Defeat) -->
+    <div id="victoryCelebration" class="hidden fixed inset-0 bg-slate-900/85 backdrop-blur-md z-50 flex flex-col items-center justify-center text-center p-4">
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-850 max-w-md w-full space-y-6 shadow-2xl transform scale-95 transition duration-500 relative overflow-hidden">
+            <!-- Background Radial Glow -->
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-yellow-400/10 rounded-full blur-xl animate-pulse"></div>
+            
+            <!-- Animated Dynamic Trophy Icon Box -->
+            <div class="w-20 h-20 bg-yellow-50 dark:bg-yellow-950/40 text-yellow-500 rounded-full flex items-center justify-center mx-auto text-4xl animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100" id="victoryHeader">Quest Complete! 🏆</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2" id="victorySubtitle">You have defeated the Boss and mastered this concept.</p>
+            </div>
+            
+            <!-- XP & Rank Summary Metrics Box -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-750">
+                <div class="text-left">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">XP Awarded</span>
+                    <h4 class="text-lg font-bold text-emerald-600">+250 XP</h4>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Study Rank</span>
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">Rank Level Up! ⭐</h4>
+                </div>
+            </div>
+
+            <!-- Return back to the Lobby Setup form -->
+            <button onclick="exitBattleArena()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition active:scale-95">
+                Return to Hub
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. HEADING HEADER BLOCK & PROGRESS HUD -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">AI Academic Study Quest ⚔️🎓</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Conquer conceptual challenges, level up active recall, and fight syllabus monsters.</p>
+        </div>
+        
+        <!-- Live XP & Rank Display -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-2.5 rounded-2xl shadow-sm flex items-center space-x-3">
+            <div class="w-8 h-8 bg-amber-50 dark:bg-amber-950/40 text-amber-500 rounded-xl flex items-center justify-center text-sm">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <div>
+                <span class="text-[9px] font-bold text-slate-400 uppercase">Your Study XP</span>
+                <div class="flex items-center space-x-1.5 mt-0.5">
+                    <span id="globalXpDisplay" class="text-sm font-extrabold text-slate-800 dark:text-slate-100">1,240 XP</span>
+                    <span class="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-900/60 px-1.5 py-0.5 rounded">Lv. 3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================================
+         STAGE 1: SETUP PANEL (Where the student inputs their topic to summon the quest)
+         ==================================================================================== -->
+    <div id="arenaSetupPanel" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Setup form configuration -->
+        <div class="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm space-y-6">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">Summon an Academic Quest</h3>
+            
+            <form onsubmit="handleSummonQuest(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">What concept do you want to learn?</label>
+                    <input type="text" id="questTopicInput" required placeholder="E.g., Fraction division, Binary addition, Database joins, CPU Scheduling..." 
+                           class="w-full bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-4 py-3.5 text-xs focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition duration-200">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Suggested Quick Topics based on Active Grade selection -->
+                    <div class="bg-slate-50 dark:bg-slate-800 p-4 border border-slate-100 dark:border-slate-700 rounded-2xl">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Suggested for your tier</span>
+                        <div class="mt-2.5 space-y-1.5" id="suggestedTopicList">
+                            <!-- Populated dynamically via JS based on Active Education Level -->
+                        </div>
+                    </div>
+
+                    <!-- Loot Rewards Summary Panel -->
+                    <div class="bg-slate-50 dark:bg-slate-800 p-4 border border-slate-100 dark:border-slate-700 rounded-2xl space-y-1">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Quest Loot Rewards</span>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-emerald-600 mt-2">
+                            <i class="fa-solid fa-gem text-md"></i> <span>+250 XP Achievement</span>
+                        </div>
+                        <p class="text-[9px] text-slate-400 dark:text-slate-500 leading-relaxed mt-1">Completing this quest unlocks a high-yield concept review card saved to your active collection.</p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="summonBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-100 dark:shadow-none transition transform active:scale-95 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Summon Concept Boss & Build Cards</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Instructions Info Sidebar Card -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm space-y-5">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">How it works</h4>
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="w-6 h-6 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed"><strong class="text-slate-800 dark:text-slate-200">Concept Summoning:</strong> Gemini analyzes your syllabus target topic and generates personalized cards and battle questions.</p>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="w-6 h-6 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed"><strong class="text-slate-800 dark:text-slate-200">Active Recall Training:</strong> Review the dynamically generated 3D flashcards. Flip and evaluate your current mastery.</p>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="w-6 h-6 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed"><strong class="text-slate-800 dark:text-slate-200">Boss Fight Duel:</strong> Face the custom boss. Answer questions correctly to deal critical damage; get hit if you answer incorrectly!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================================
+         STAGE LOADING: THE PROCESSING SPINNER SCREEN (Shows during Gemini generation)
+         ==================================================================================== -->
+    <div id="questLoadingState" class="hidden bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-12 text-center max-w-xl mx-auto space-y-6 shadow-sm">
+        <div class="relative w-20 h-20 mx-auto">
+            <div class="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-slate-800"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-indigo-500 animate-spin"></div>
+        </div>
+        <div>
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-slate-100">Crafting Gamified Study Quest...</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">Summoning a unique boss, designing active recall flashcards, and forging concept-evaluation combat questions.</p>
+        </div>
+        <div class="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full inline-block animate-bounce">
+            Summoning Boss Arena ⚔️
+        </div>
+    </div>
+
+    <!-- ====================================================================================
+         STAGE 2: ACTIVE RECALL ARENA (3D card deck containing generated concept facts)
+         ==================================================================================== -->
+    <div id="flashcardArenaPanel" class="hidden max-w-2xl mx-auto space-y-6">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase">ACTIVE RECALL ARENA</span>
+            <span id="flashcardProgressText" class="text-xs font-bold text-blue-600">CARD 1 OF 5</span>
+        </div>
+
+        <!-- Interactive 3D CSS Flip Card -->
+        <div class="perspective-container h-80 cursor-pointer" onclick="flipActiveCard()">
+            <div class="relative w-full h-full duration-500 transform-style preserve-3d" id="activeFlipCard">
+                
+                <!-- Card Front Side -->
+                <div class="absolute inset-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-md backface-hidden flex flex-col justify-between">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Concept Query (Front)</span>
+                    <div class="text-center my-auto px-4">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" id="cardFrontText">Prompt Question</h2>
+                    </div>
+                    <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider">Click anywhere to flip <i class="fa-solid fa-repeat animate-spin" style="animation-duration: 3s"></i></p>
+                </div>
+                
+                <!-- Card Back Side (Hidden initially) -->
+                <div class="absolute inset-0 bg-slate-900 text-white rounded-3xl p-8 shadow-md backface-hidden rotate-y-180 flex flex-col justify-between">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Model Explanation (Back)</span>
+                    <div class="text-center my-auto px-4">
+                        <p class="text-sm leading-relaxed" id="cardBackText">Explanation Answer</p>
+                    </div>
+                    <p class="text-center text-[10px] text-slate-500 font-bold uppercase tracking-wider">Click anywhere to flip <i class="fa-solid fa-repeat"></i></p>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex items-center justify-between gap-4">
+            <button onclick="previousFlashcard()" class="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-angle-left"></i> <span>Back</span>
+            </button>
+            <button onclick="nextFlashcard()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center space-x-1">
+                <span>Understood</span> <i class="fa-solid fa-angle-right"></i>
+            </button>
+        </div>
+
+        <!-- Shortcut Skip Command Link -->
+        <button onclick="transitionToCombatMode()" class="w-full text-center text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-center gap-1">
+            <span>Skip Flashcards & Face Boss Duel</span> <i class="fa-solid fa-gun"></i>
+        </button>
+    </div>
+
+    <!-- ====================================================================================
+         STAGE 3: THE GAMIFIED BOSS DUEL ARENA (HP & Shield combat interface)
+         ==================================================================================== -->
+    <div id="battleArenaPanel" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- HUD Control Bar: Boss stats, Player Shield meters -->
+        <div class="md:col-span-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-4">
+                <span class="px-2.5 py-0.5 text-[9px] font-bold rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/55 uppercase tracking-wider">BATTLE ENCOUNTER</span>
+                
+                <!-- Boss Graphic Frame container -->
+                <div class="relative w-full h-44 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                    <svg class="w-24 h-24 text-rose-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <!-- Boss overlay tags -->
+                    <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 text-white p-2 rounded-lg text-center backdrop-blur-xs">
+                        <h4 class="text-xs font-bold truncate" id="hudBossName">Boss Name</h4>
+                        <p class="text-[9px] text-slate-400 truncate" id="hudBossTitle">Summoned Monster</p>
+                    </div>
+                </div>
+
+                <!-- Boss HP Bar -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-slate-500">Boss HP</span>
+                        <span id="bossHealthText" class="text-rose-600">100 / 100</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-100 dark:border-slate-750">
+                        <div id="bossHealthBar" class="bg-gradient-to-r from-rose-500 to-red-600 h-full rounded-full transition-all duration-300" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- Player Shield Bar -->
+                <div class="space-y-1 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-slate-500">My Study Shield</span>
+                        <span id="playerShieldText" class="text-blue-600">100 / 100</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-100 dark:border-slate-750">
+                        <div id="playerShieldBar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-300" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Helpful tip info badge -->
+            <div class="p-3 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/35 rounded-2xl flex items-center space-x-2">
+                <i class="fa-solid fa-lightbulb text-indigo-500 text-sm"></i>
+                <p class="text-[9px] text-indigo-700 dark:text-indigo-300 leading-relaxed">Solve the questions correctly. Incorrect answers deal 25 damage to your study shield!</p>
+            </div>
+        </div>
+
+        <!-- Dialogue Box: MCQ Question & Detailed Explanations -->
+        <div class="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm flex flex-col justify-between min-h-[400px]">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <span class="text-xs font-bold text-slate-400 uppercase">ACADEMIC DUEL</span>
+                    <span id="battleQuestionIndex" class="text-xs font-bold text-slate-800 dark:text-slate-200">QUESTION 1 OF 4</span>
+                </div>
+
+                <!-- Active Question Title -->
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 leading-relaxed" id="battleQuestionText">Loading Question Prompt...</h3>
+
+                <!-- MCQ Options Grid (Generated dynamically inside javascript) -->
+                <div class="grid grid-cols-1 gap-3.5" id="mcqOptionsGrid">
+                    <!-- Dynamically populated via JS -->
+                </div>
+            </div>
+
+            <!-- Explanatory Feedback Alert (shown only after choosing an answer) -->
+            <div id="battleFeedbackArea" class="hidden p-4 rounded-xl border mt-6 flex items-start gap-3 animate-fade-in">
+                <!-- Dynamically populated with correct/incorrect status and AI explanation -->
+            </div>
+
+            <!-- Next Progression Lock button -->
+            <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end mt-6">
+                <button id="battleNextBtn" disabled onclick="nextBattleQuestion()" class="bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 font-bold py-2.5 px-6 rounded-xl transition flex items-center space-x-1">
+                    <span>Lock Answer & Proceed</span> <i class="fa-solid fa-forward"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CSS 3D Transforms (Self-Contained) -->
+<style>
+    .perspective-container {
+        perspective: 1000px;
+    }
+    .preserve-3d {
+        transform-style: preserve-3d;
+    }
+    .backface-hidden {
+        backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+        transform: rotateY(180deg);
+    }
+</style>
+
+<!-- Game Logic scripts are loaded underneath -->
+<script>
+    // JS Logic handles active card rotation, Boss HP arithmetic, and Audio synthesis tones!
+</script>
+{% endblock %}
