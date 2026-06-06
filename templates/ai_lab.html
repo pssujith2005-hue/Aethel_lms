@@ -1,28 +1,239 @@
 {% extends 'base.html' %}
 
-{% block title %}AI Engine Lab | Aethel.ai{% endblock %}
-
 {% block content %}
-<div class="space-y-6">
-    <div>
-        <h1 class="text-3xl font-bold text-slate-900">AI Knowledge Lab ⚡</h1>
-        <p class="text-slate-500 mt-1">Ingest raw educational text structures to configure specialized custom questions instantly.</p>
+<div class="container py-4">
+    <!-- Header banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 rounded-3 bg-white bg-opacity-10 text-white" style="font-size: 2rem;">
+                        <i class="fa-solid fa-microchip-ai"></i>
+                    </div>
+                    <div>
+                        <h1 class="fw-bold mb-1">Aethel AI Lab & Note Upload</h1>
+                        <p class="mb-0 opacity-90 text-light small-md">Upload revision material PDF, define curriculum categories, and let Aethel generate adaptive practice questions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-8 max-w-2xl shadow-sm">
-        <h2 class="text-lg font-bold text-slate-900 mb-4">Upload Context Source</h2>
-        
-        <form class="space-y-6" method="POST" enctype="multipart/form-data" action="{% url 'ai_lab' %}">
-            {% csrf_token %}
-            <div class="border-2 border-dashed border-slate-200 hover:border-blue-500 bg-slate-50/50 rounded-xl p-8 text-center cursor-pointer relative">
-                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-3"></i>
-                <p class="text-sm font-semibold text-slate-700">Select or drop lecture textbook PDF here</p>
-                <input type="file" name="lecture_file" required class="block mx-auto mt-4 text-xs text-slate-500">
+    <!-- Upload form card and helpful tips -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h4 class="fw-bold text-dark mb-3"><i class="fa-solid fa-cloud-arrow-up text-primary me-2"></i>Contribute Learning Resource</h4>
+                <p class="text-muted small-md mb-4">Provide details about your study material. This ensures other school, UG, PG, or entrance examination candidates can locate and review your resources quickly!</p>
+
+                <form method="POST" action="{% url 'ai_lab' %}" enctype="multipart/form-data" id="uploadForm">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <!-- Custom Title -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-secondary text-sm">Study Document Title <span class="text-danger">*</span></label>
+                            <input type="text" name="title" class="form-control py-2.5 rounded-3 border-light bg-light" placeholder="e.g., Matrices & Determinants Core Formulas" required>
+                        </div>
+
+                        <!-- Educational Tier Select -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary text-sm">Education Tier <span class="text-danger">*</span></label>
+                            <select name="education_tier" id="tierSelect" class="form-select py-2.5 rounded-3 border-light bg-light" required>
+                                <option value="SCHOOL_KERALA">School - Kerala State Syllabus</option>
+                                <option value="SCHOOL_CBSE">School - CBSE Syllabus</option>
+                                <option value="UG">Undergraduate (UG) Degree</option>
+                                <option value="PG">Postgraduate (PG) Degree</option>
+                                <option value="ENTRANCE" selected>Entrance Exam Prep</option>
+                                <option value="OTHER">General / Other Category</option>
+                            </select>
+                        </div>
+
+                        <!-- Class Standard, Semester or Level -->
+                        <div class="col-md-6" id="gradeContainer">
+                            <label class="form-label fw-bold text-secondary text-sm" id="gradeLabel">Standard / Class / Sem</label>
+                            <!-- Dynamic selector rendered via JS depending on Selected Tier -->
+                            <select name="grade_or_semester" id="gradeSelect" class="form-select py-2.5 rounded-3 border-light bg-light">
+                                <option value="">-- Select Grade --</option>
+                            </select>
+                        </div>
+
+                        <!-- Course program name (Applicable only for UG/PG degrees) -->
+                        <div class="col-md-6 d-none" id="courseContainer">
+                            <label class="form-label fw-bold text-secondary text-sm">Course Name / Major</label>
+                            <input type="text" name="course_name" id="courseInput" class="form-control py-2.5 rounded-3 border-light bg-light" placeholder="e.g., BCA, BSc Computer Science, MCA, MBA">
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary text-sm">Core Subject Name</label>
+                            <input type="text" name="subject" class="form-control py-2.5 rounded-3 border-light bg-light" placeholder="e.g., Mathematics, Computer Networks, Physics, Malayalam">
+                        </div>
+
+                        <!-- File Input -->
+                        <div class="col-12 mt-4">
+                            <div class="drag-drop-zone p-4 rounded-4 border-2 border-dashed border-primary bg-light text-center cursor-pointer transition" id="dropzone">
+                                <div class="text-primary mb-3" style="font-size: 2.5rem;"><i class="fa-solid fa-file-pdf"></i></div>
+                                <h6 class="fw-bold mb-1" id="file_status">Select your textbook or revision notes PDF</h6>
+                                <p class="text-muted small-md mb-3">Only PDF files with readable text can be parsed by the AI engine.</p>
+                                
+                                <label for="file_upload" class="btn btn-outline-primary px-3 py-1.5 rounded-3 text-sm fw-semibold">Browse Files</label>
+                                <input type="file" name="lecture_file" id="file_upload" class="d-none" accept=".pdf" required>
+                            </div>
+                        </div>
+
+                        <!-- Submit with loading indication -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-xs d-flex align-items-center justify-content-center gap-2" id="submitBtn">
+                                <i class="fa-solid fa-gears"></i> Categorize & Summon AI Quizzer
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition">
-                Generate Interactive Quiz via AI
-            </button>
-        </form>
+        </div>
+
+        <!-- Right Side: Guidelines & Information -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Curriculum Helper</h5>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3.5">
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="p-1.5 bg-success-subtle text-success rounded-3 text-xs mt-0.5"><i class="fa-solid fa-school"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark text-xs mb-0.5">Kerala Syllabus Std 5-12</h6>
+                            <p class="text-muted small mb-0">Includes SCERT state curriculum books and syllabus revision notes.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="p-1.5 bg-warning-subtle text-warning rounded-3 text-xs mt-0.5"><i class="fa-solid fa-school-flag"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark text-xs mb-0.5">CBSE Standards 5-12</h6>
+                            <p class="text-muted small mb-0">Class notes corresponding to NCERT frameworks across all standards.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="p-1.5 bg-primary-subtle text-primary rounded-3 text-xs mt-0.5"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark text-xs mb-0.5">UG / PG Course Semester Tracks</h6>
+                            <p class="text-muted small mb-0">Semester papers, notes, core modules for courses like BCA, MCA, BSc, MSc, etc.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="p-1.5 bg-purple-subtle text-purple rounded-3 text-xs mt-0.5"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <h6 class="fw-bold text-dark text-xs mb-0.5">AI Engine Processing</h6>
+                            <p class="text-muted small mb-0">Upon upload, Aethel AI automatically reads the first 8,000 characters and parses multiple-choice evaluation structures.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Scripts for interactive fields behavior -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const tierSelect = document.getElementById("tierSelect");
+        const gradeSelect = document.getElementById("gradeSelect");
+        const gradeContainer = document.getElementById("gradeContainer");
+        const gradeLabel = document.getElementById("gradeLabel");
+        const courseContainer = document.getElementById("courseContainer");
+        const courseInput = document.getElementById("courseInput");
+        
+        // Handle file browse display
+        const fileUpload = document.getElementById("file_upload");
+        const fileStatus = document.getElementById("file_status");
+        
+        fileUpload.addEventListener("change", function() {
+            if (fileUpload.files && fileUpload.files.length > 0) {
+                fileStatus.innerHTML = `<i class="fa-regular fa-file-pdf text-success"></i> Selected: <strong class="text-success">${fileUpload.files[0].name}</strong>`;
+            }
+        });
+
+        // Interactive Grade option lists mapping
+        const grades = {
+            'SCHOOL_KERALA': ['Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'],
+            'SCHOOL_CBSE': ['Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'],
+            'UG': ['BCA', 'BSc Computer Science', 'BCom', 'BTech', 'BA', 'BSc Physics', 'BSc Maths', 'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6'],
+            'PG': ['MCA', 'MSc Computer Science', 'MBA', 'MTech', 'MCom', 'MSc Physics', 'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4'],
+            'ENTRANCE': ['LBS MCA Entrance', 'CUSAT CAT MCA', 'NIMCET NIT'],
+            'OTHER': ['General Prep', 'Formula Sheet', 'Revision Book']
+        };
+
+        function updateFormLayout() {
+            const val = tierSelect.value;
+            gradeSelect.innerHTML = "";
+            
+            // Render Dynamic Selector choices
+            if (grades[val]) {
+                grades[val].forEach(grade => {
+                    const option = document.createElement("option");
+                    option.value = grade;
+                    option.textContent = grade;
+                    gradeSelect.appendChild(option);
+                });
+            }
+
+            // Update visible container states
+            if (val === 'SCHOOL_KERALA' || val === 'SCHOOL_CBSE') {
+                gradeContainer.classList.remove("d-none");
+                gradeLabel.textContent = "School Class Standard";
+                courseContainer.classList.add("d-none");
+                courseInput.removeAttribute("required");
+            } else if (val === 'UG' || val === 'PG') {
+                gradeContainer.classList.remove("d-none");
+                gradeLabel.textContent = "Semester Level";
+                courseContainer.classList.remove("d-none");
+                courseInput.setAttribute("required", "required");
+                courseInput.placeholder = val === 'UG' ? "e.g., BCA, BSc Computer Science" : "e.g., MCA, MSc Physics";
+            } else {
+                gradeContainer.classList.remove("d-none");
+                gradeLabel.textContent = "Exam / Module Level";
+                courseContainer.classList.add("d-none");
+                courseInput.removeAttribute("required");
+            }
+        }
+
+        tierSelect.addEventListener("change", updateFormLayout);
+        updateFormLayout(); // Initial invocation on page loaded
+
+        // Handle submit button loader state change
+        const uploadForm = document.getElementById("uploadForm");
+        const submitBtn = document.getElementById("submitBtn");
+        
+        uploadForm.addEventListener("submit", function() {
+            submitBtn.setAttribute("disabled", "disabled");
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Parsing text & generating AI quiz... Please wait`;
+        });
+    });
+</script>
+
+<style>
+    .drag-drop-zone {
+        border-style: dashed;
+        background-color: #f8fafc;
+    }
+    .drag-drop-zone:hover {
+        background-color: #f1f5f9;
+        border-color: #4f46e5 !important;
+    }
+    .bg-primary-subtle {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    .bg-success-subtle {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .bg-warning-subtle {
+        background-color: #fef9c3;
+        color: #854d0e;
+    }
+    .bg-purple-subtle {
+        background-color: #f3e8ff;
+        color: #6b21a8;
+    }
+</style>
 {% endblock %}

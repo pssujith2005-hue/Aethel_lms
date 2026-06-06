@@ -33,11 +33,20 @@
                 <span>Dashboard</span>
             </a>
         
-            <a href="{% url 'courses' %}" 
+            <!-- Modernized Sidebar Route: Mock Test Arena -->
+            <a href="{% url 'mock_tests' %}" 
                class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
-               {% if active_nav == 'courses' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
-                <i class="fa-solid fa-book-open text-base transition-transform group-hover:scale-110 {% if active_nav == 'courses' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> 
-                <span>My Courses</span>
+               {% if active_nav == 'mock_tests' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-graduation-cap text-base transition-transform group-hover:scale-110 {% if active_nav == 'mock_tests' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> 
+                <span>Mock Test Arena</span>
+            </a>
+
+            <!-- Modernized Sidebar Route: Leaderboard -->
+            <a href="{% url 'leaderboard' %}" 
+               class="flex items-center space-x-3.5 px-4 py-3 rounded-xl font-medium text-sm group transition-all duration-200 
+               {% if active_nav == 'leaderboard' %} bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm {% else %} text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 {% endif %}">
+                <i class="fa-solid fa-ranking-star text-base transition-transform group-hover:scale-110 {% if active_nav == 'leaderboard' %} text-blue-600 dark:text-blue-400 {% else %} text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 {% endif %}"></i> 
+                <span>Leaderboard</span>
             </a>
         
             <a href="{% url 'ai_lab' %}" 

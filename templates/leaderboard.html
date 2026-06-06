@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-4 animate-fade-in">
+    <!-- Header banner -->
+    <div class="p-6 rounded-3xl text-white shadow-lg border-0 mb-6 relative overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+        <div class="absolute right-0 bottom-0 p-5 opacity-10" style="transform: scale(3.5);"><i class="fa-solid fa-ranking-star"></i></div>
+        <div class="relative z-10 flex align-items-center justify-between flex-wrap gap-4">
+            <div>
+                <span class="bg-indigo-500 bg-opacity-20 text-indigo-300 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-2 inline-block">
+                    <i class="fa-solid fa-trophy text-yellow-400 mr-1 animate-pulse"></i> Dynamic Standings
+                </span>
+                <h1 class="text-3xl font-extrabold mb-1">Global League Leaderboard</h1>
+                <p class="text-slate-300 opacity-90 text-sm max-w-lg">Rank points are scored based on your correct evaluations (+15 pts per MCQ) inside the interactive Mock Exam Arena. Climb up the rank boards!</p>
+            </div>
+            <div>
+                <a href="{% url 'mock_tests' %}" class="btn py-3 px-5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl shadow-md flex items-center gap-1.5">
+                    <i class="fa-solid fa-graduation-cap"></i> Challenge Mock Exam
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 3 Podiums Visual Board (Inspired by gamified references) -->
+    <div class="row mb-6 flex flex-wrap justify-center gap-4 text-center">
+        <!-- Top 3 rendered dynamically or custom layouts inside template -->
+        {% for profile in leaderboard|slice:":3" %}
+            <div class="flex-1 min-w-[200px] p-5 bg-white border border-slate-200 rounded-2xl shadow-sm relative flex flex-col items-center justify-between">
+                <!-- Medal crown graphics -->
+                <div class="absolute top-3 right-3 text-2xl">
+                    {% if forloop.counter == 1 %}
+                        <i class="fa-solid fa-crown text-yellow-500"></i>
+                    {% elif forloop.counter == 2 %}
+                        <i class="fa-solid fa-medal text-slate-400"></i>
+                    {% else %}
+                        <i class="fa-solid fa-medal text-amber-700"></i>
+                    {% endif %}
+                </div>
+                
+                <div class="w-14 h-14 bg-indigo-50 text-indigo-600 border rounded-full flex items-center justify-center font-black text-lg mb-3">
+                    {{ profile.user.first_name|slice:":2"|upper }}
+                </div>
+                <div>
+                    <h5 class="font-extrabold text-slate-800 text-sm mb-0.5">{{ profile.user.first_name }}</h5>
+                    <span class="badge bg-slate-100 text-slate-600 text-xxs border px-2 py-0.5 rounded mb-3 inline-block">Rank {{ forloop.counter }}</span>
+                </div>
+                <div class="p-2 bg-indigo-50 text-indigo-700 font-black rounded-xl text-sm w-full">
+                    {{ profile.total_points }} Points
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Complete Ranked Standings Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 overflow-hidden">
+        <div class="p-3 border-b mb-3">
+            <span class="text-xs uppercase text-slate-400 font-bold tracking-wider">Complete Student Rankings</span>
+        </div>
+        <div class="flex flex-col gap-3">
+            {% for profile in leaderboard %}
+                <div class="p-4 rounded-xl border flex justify-between items-center flex-wrap gap-4 text-sm {% if profile.user == request.user %}bg-indigo-50 border-indigo-200{% else %}bg-slate-50{% endif %}">
+                    <div class="flex items-center gap-4">
+                        <!-- Rank Number badge -->
+                        <span class="font-extrabold text-slate-800 w-6 text-center text-md">#{{ forloop.counter }}</span>
+                        <!-- Student avatar initials -->
+                        <div class="w-10 h-14 bg-white border text-indigo-700 font-extrabold rounded-lg flex items-center justify-center text-xs">
+                            {{ profile.user.first_name|slice:":2"|upper }}
+                        </div>
+                        <div>
+                            <span class="block font-extrabold text-slate-800 text-sm leading-none mb-1">
+                                {{ profile.user.first_name }}
+                                {% if profile.user == request.user %}
+                                    <span class="badge bg-indigo-600 text-white text-xxs font-normal rounded px-1.5 py-0.5 ml-1">You</span>
+                                {% endif %}
+                            </span>
+                            <!-- Serailized badges list displayed inline inside table -->
+                            <div class="flex flex-wrap gap-1">
+                                {% for b in profile.badge_list %}
+                                    <span class="badge bg-white text-slate-600 border text-xxs rounded px-2 py-0.5" title="{{ b.description }}">
+                                        <i class="{{ b.icon }} mr-1"></i> {{ b.name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <span class="badge bg-light text-slate-500 border text-xxs">{{ profile.badges_count }} Badges Unlocked</span>
+                        <div class="px-3.5 py-1.5 bg-white border border-slate-200 text-indigo-700 font-black rounded-lg text-sm shadow-xs">
+                            {{ profile.total_points }} Pts
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-xxs { font-size: 0.7rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.875rem; }
+    .animate-fade-in {
+        animation: fadeIn 0.35s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

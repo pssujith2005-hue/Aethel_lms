@@ -1,97 +1,99 @@
 import os
 import json
-import pypdf
-from google import genai
-from google.genai import types
-from pydantic import BaseModel
-from typing import List
+import fitz  # PyMuPDF
+import requests
 from django.conf import settings
 from .models import StudyMaterial, Question
 
-# Pydantic Blueprint forces Gemini to return strict structural data profiles
-class AIQuestionSchema(BaseModel):
-    question_text: str
-    option_a: str
-    option_b: str
-    option_c: str
-    option_d: str
-    correct_answer: str # Must be A, B, C, or D
-    concept_tag: str
-
-class QuizGenerationSchema(BaseModel):
-    quiz_title: str
-    questions: List[AIQuestionSchema]
-
-def extract_text_from_pdf(file_path):
-    """Reads a PDF local address path and compiles the string context data."""
+def extract_text_from_pdf(pdf_path):
+    """Extracts raw text content from local PDF textbooks."""
+    doc = fitz.open(pdf_path)
     text = ""
-    try:
-        with open(file_path, 'rb') as f:
-            reader = pypdf.PdfReader(f)
-            for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text += page_text + "\n"
-    except Exception as e:
-        print(f"Error parsing PDF metadata: {e}")
+    for page in doc:
+        text += page.get_text()
     return text
 
 def generate_ai_quiz(material_id):
-    """Fetches text context background details and populates question structures via Gemini."""
-    material = StudyMaterial.objects.get(id=material_id)
-    
-    if not material.extracted_text or len(material.extracted_text.strip()) == 0:
-        return False, "The uploaded PDF file is empty or could not be parsed into readable text."
-
-    if not settings.AI_API_KEY:
-        return False, "Gemini API Key is missing. Please configure AI_API_KEY in your .env file."
-
-    # Initialize the client securely
-    client = genai.Client(api_key=settings.AI_API_KEY)
-    
-    prompt = f"""
-    You are an expert academic evaluator. Analyze the following textbook/lecture transcript notes context
-    and generate a comprehensive multi-choice concept evaluation quiz based on it.
-    
-    Context material content source:
-    ---
-    {material.extracted_text[:8000]}
-    ---
-    
-    Generate exactly 5 questions. Provide distinct concept tags for different topics found.
-    The correct_answer field value must be strictly exactly one character: 'A', 'B', 'C', or 'D'.
     """
-
+    Generates 5 multiple choice questions based on study materials
+    using the highly stable Gemini REST API instead of the gRPC client.
+    """
     try:
-        # Call the Gemini Flash model with forced structured output configurations
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=QuizGenerationSchema,
-                temperature=0.3,
-            ),
-        )
+        material = StudyMaterial.objects.get(id=material_id)
+        if not material.extracted_text:
+            return False, "No extracted text found in study material."
+
+        # Fetch embedded API key from Django settings
+        api_key = getattr(settings, "AI_API_KEY", "") or os.environ.get("AI_API_KEY", "")
+        if not api_key:
+            return False, "Gemini API key is not configured inside settings.py."
+
+        # Direct REST endpoint bypasses local gRPC socket hanging issues
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
         
-        # Safely parse structural response text payload string back to native dictionary items
-        data = json.loads(response.text)
+        prompt = f"""
+        Analyze the following educational text and generate exactly 5 high-quality multiple choice questions (MCQs) 
+        testing different concepts from the text.
         
-        # Save each parsed item cleanly to the database
-        for item in data['questions']:
+        Educational Text:
+        {material.extracted_text[:8000]}
+        """
+        
+        payload = {
+            "contents": [{
+                "parts": [{"text": prompt}]
+            }],
+            "generationConfig": {
+                "responseMimeType": "application/json",
+                "responseSchema": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "questions": {
+                            "type": "ARRAY",
+                            "items": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "question_text": {"type": "STRING"},
+                                    "option_a": {"type": "STRING"},
+                                    "option_b": {"type": "STRING"},
+                                    "option_c": {"type": "STRING"},
+                                    "option_d": {"type": "STRING"},
+                                    "correct_answer": {"type": "STRING"},
+                                    "concept_tag": {"type": "STRING"},
+                                    "difficulty": {"type": "STRING"}
+                                },
+                                "required": ["question_text", "option_a", "option_b", "option_c", "option_d", "correct_answer", "concept_tag", "difficulty"]
+                            }
+                        }
+                    },
+                    "required": ["questions"]
+                },
+                "temperature": 0.3
+            }
+        }
+        
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(url, json=payload, headers=headers, timeout=25)
+        
+        if response.status_code != 200:
+            return False, f"Gemini API returned status {response.status_code}: {response.text}"
+            
+        res_data = response.json()
+        raw_text = res_data['candidates'][0]['content']['parts'][0]['text']
+        
+        data = json.loads(raw_text)
+        for q_data in data.get('questions', []):
             Question.objects.create(
                 material=material,
-                question_text=item['question_text'],
-                option_a=item['option_a'],
-                option_b=item['option_b'],
-                option_c=item['option_c'],
-                option_d=item['option_d'],
-                correct_answer=item['correct_answer'].upper().strip(),
-                concept_tag=item['concept_tag'].replace(" ", "_"),
-                difficulty='MEDIUM'
+                question_text=q_data['question_text'],
+                option_a=q_data['option_a'],
+                option_b=q_data['option_b'],
+                option_c=q_data['option_c'],
+                option_d=q_data['option_d'],
+                correct_answer=q_data['correct_answer'].strip().upper()[:1],
+                concept_tag=q_data['concept_tag'],
+                difficulty=q_data['difficulty'].upper()
             )
         return True, None
     except Exception as e:
-        error_msg = str(e)
-        print(f"Failed to generate or store AI content safely: {error_msg}")
-        return False, f"AI Generation Failed: {error_msg}"
+        return False, str(e)
