@@ -53,7 +53,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'aethel_config.wsgi.application'
 
 # Database
-# Using SQLite for single session state persistence
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -95,6 +94,15 @@ MEDIA_ROOT = BASE_DIR / 'textbooks'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ================= AETHEL AI ENGINE CONFIGURATION =================
-# Embedded Gemini API Key for reliable production requests
-AI_API_KEY = "AQ.Ab8RN6KBS-QCBU-CcYNXsTJHuMaA4zALqlQfCPVqdOGvHzuRZQ"
+# ================= AETHEL ENVIRONMENT CONFIGURATION =================
+# Loads keys securely from local untracked .env file
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    with open(env_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if '=' in line and not line.strip().startswith('#'):
+                key, val = line.strip().split('=', 1)
+                os.environ[key.strip()] = val.strip()
+
+# Fetch secure key from loaded environment (strictly no hardcoded secrets)
+AI_API_KEY = os.environ.get("AI_API_KEY", "")
